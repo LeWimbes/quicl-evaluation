@@ -1,7 +1,6 @@
 from core.nodes.base import CoreNode
 from core.services.coreservices import CoreService, ServiceMode
 
-
 class Dtn7GoService(CoreService):
     name: str = "dtn7-go"
     group: str = "DTN"

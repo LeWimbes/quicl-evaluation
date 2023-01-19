@@ -6,52 +6,52 @@ WORKDIR /dtn7-go
 RUN go build -race -buildvcs=false -o /dtngod ./cmd/dtnd
 
 
-### Build ibrdtn
-# FROM maciresearch/core_worker:9.0.1 AS ibrdtn-builder
+## Build ibrdtn
+FROM maciresearch/core_worker:0.4.2 AS ibrdtn-builder
 
-# # Install depencencies according to https://github.com/ibrdtn/ibrdtn/wiki/Build-IBR-DTN
-# # install common dependencies
-# RUN apt-get update \
-#     && apt-get install --no-install-recommends -yq \
-#     build-essential \
-#     devscripts \
-#     automake \
-#     autoconf \
-#     pkg-config \
-#     libtool \
-#     debhelper \
-#     cdbs \
-#     git \
-#     subversion \
-#     wget \
-#     curl \
-#     gawk \
-#     libncurses5-dev
+# Install depencencies according to https://github.com/ibrdtn/ibrdtn/wiki/Build-IBR-DTN
+# install common dependencies
+RUN apt-get update \
+    && apt-get install --no-install-recommends -yq \
+    build-essential \
+    devscripts \
+    automake \
+    autoconf \
+    pkg-config \
+    libtool \
+    debhelper \
+    cdbs \
+    git \
+    subversion \
+    wget \
+    curl \
+    gawk \
+    libncurses5-dev
 
 
-# # install library packages
-# RUN apt-get install --no-install-recommends -yq \
-#     libssl-dev \
-#     libz-dev \
-#     libsqlite3-dev \
-#     libcurl4-openssl-dev \
-#     libdaemon-dev \
-#     libcppunit-dev \
-#     libnl-3-dev \
-#     libnl-cli-3-dev \
-#     libnl-genl-3-dev \
-#     libnl-nf-3-dev \
-#     libnl-route-3-dev \
-#     libarchive-dev
+# install library packages
+RUN apt-get install --no-install-recommends -yq \
+    libssl-dev \
+    libz-dev \
+    libsqlite3-dev \
+    libcurl4-openssl-dev \
+    libdaemon-dev \
+    libcppunit-dev \
+    libnl-3-dev \
+    libnl-cli-3-dev \
+    libnl-genl-3-dev \
+    libnl-nf-3-dev \
+    libnl-route-3-dev \
+    libarchive-dev
 
-# ENV CXXFLAGS -Wno-deprecated
+ENV CXXFLAGS -Wno-deprecated
 
-# ADD ibrdtn /ibrdtn
-# WORKDIR /ibrdtn/ibrdtn
-# RUN bash autogen.sh
-# RUN ./configure
-# RUN make -j $(nproc)
-# RUN make install
+ADD ibrdtn /ibrdtn
+WORKDIR /ibrdtn/ibrdtn
+RUN bash autogen.sh
+RUN ./configure
+RUN make -j $(nproc)
+RUN make install
 
 
 # ### Build serval
@@ -105,10 +105,10 @@ RUN echo 'export SERVALINSTANCE_PATH=$SESSION_DIR/`hostname`.conf' >> /root/.ser
 # DTN7
 COPY --from=dtn7-go-builder    /dtngod                           /usr/local/sbin/
 # IBR-DTN
-# COPY --from=ibrdtn-builder  /usr/local/bin/dtnsend              /usr/local/sbin/
-# COPY --from=ibrdtn-builder  /usr/local/sbin/dtnd                /usr/local/sbin/
-# COPY --from=ibrdtn-builder  /usr/local/lib/libibrdtn.so.1       /usr/lib/
-# COPY --from=ibrdtn-builder  /usr/local/lib/libibrcommon.so.1    /usr/lib/
+COPY --from=ibrdtn-builder  /usr/local/bin/dtnsend              /usr/local/sbin/
+COPY --from=ibrdtn-builder  /usr/local/sbin/dtnd                /usr/local/sbin/
+COPY --from=ibrdtn-builder  /usr/local/lib/libibrdtn.so.1       /usr/lib/
+COPY --from=ibrdtn-builder  /usr/local/lib/libibrcommon.so.1    /usr/lib/
 # # SERVAL
 # COPY --from=serval-builder  /serval-dna/servald                 /usr/local/sbin/
 # # FORBAN

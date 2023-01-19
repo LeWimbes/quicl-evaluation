@@ -66,3 +66,4 @@ dotcore/icons/**
 dotcore/mobility/**
 dotcore/xmls/**
 **/__pycache__/**
+dotcore/gui.log
