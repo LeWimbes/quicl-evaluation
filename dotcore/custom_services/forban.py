@@ -1,27 +1,21 @@
+from core.nodes.base import CoreNode
 from core.services.coreservices import CoreService, ServiceMode
 
-
 class ForbanService(CoreService):
-    name = "Forban"
-    group = "DTN"
-    dependencies = ()
-    configs = ("forban.cfg",)
+    name: str = "Forban"
+    group: str = "DTN"
+    executables: tuple[str, ...] = ()
+    dependencies: tuple[str, ...] = ()
+    configs: tuple[str, ...] = ("forban.cfg", )
 
-    # forbanctl prints  the PIDs of the procceses, if they are running.
-    # But PID:False is printed, then it is not running.
-    validate = ("bash -c '\
-if [ \"$(forban/bin/forbanctl status | tail -1 | cut -d\" \" -f2)\" == \"PID:False\" ]; then exit 1; else exit 0; fi'", )
-
-    validation_mode = ServiceMode.NON_BLOCKING  # NON_BLOCKING uses the validate commands for validation.
-
-    validation_timer = 10                       # Wait 1 second before validating service.
-
-    validation_period = 10                      # Retry after 1 second if validation was not successful.
-
-    shutdown = ("bash -c 'forban/bin/forbanctl stop >> forban/forban.log 2>&1'", )
+    validate = ("bash -c 'if [ \"$(forban/bin/forbanctl status | tail -1 | cut -d\" \" -f2)\" == \"PID:False\" ]; then exit 1; else exit 0; fi'", ) # forbanctl prints  the PIDs of the procceses, if they are running. But PID:False is printed, then it is not running.
+    validation_mode: ServiceMode = ServiceMode.NON_BLOCKING
+    validation_timer: int = 1
+    validation_period: float = 0.5
+    shutdown = ("bash -c 'forban/bin/forbanctl stop >> forban/forban_run.log 2>&1'", )
 
     @classmethod
-    def generate_config(cls, node, filename):
+    def generate_config(cls, node: CoreNode, filename: str) -> str:
         destinations = []
         for iface in node.ifaces.values():
             for addr in iface.ip4s:

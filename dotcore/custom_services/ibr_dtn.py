@@ -4,21 +4,16 @@ from core.services.coreservices import CoreService, ServiceMode
 class IbrDtnService(CoreService):
     name: str = "IBRDTN"
     group: str = "DTN"
-    executables: tuple[str, ...] = (
-        "dtnd",
-        "dtnsend"
-    )
+    executables: tuple[str, ...] = ("dtnd", "dtnsend")
     dependencies: tuple[str, ...] = ()
     dirs: tuple[str, ...] = ("/ibrdtn_inbox", )
     configs: tuple[str, ...] = ('ibrdtn.conf', )
-    startup: tuple[str, ...] = ("bash -c '\
-dtnd -c ibrdtn.conf -D; sleep 2; pkill -INT dtnd; nohup dtnd -v --timestamp -c ibrdtn.conf > ibrdtn_run.log 2>&1 &\
-'", )
-    validate: tuple[str, ...] = ("pgrep dtnd",)
+    startup: tuple[str, ...] = ("bash -c 'dtnd -c ibrdtn.conf -D; sleep 2; pkill -INT dtnd; nohup dtnd -v --timestamp -c ibrdtn.conf > ibrdtn_run.log 2>&1 &'", )
+    validate: tuple[str, ...] = ("pgrep dtnd" ,)
     validation_mode: ServiceMode = ServiceMode.NON_BLOCKING
     validation_timer: int = 1
     validation_period: float = 0.5
-    shutdown: tuple[str, ...] = ("pkill dtnd",)
+    shutdown: tuple[str, ...] = ("pkill dtnd", )
 
     @classmethod
     def generate_config(cls, node: CoreNode, filename: str) -> str:
