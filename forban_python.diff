@@ -1,0 +1,10 @@
+diff --git a/bin/forbanctl b/bin/forbanctl
+index 3c1d553..18b305c 100755
+--- a/bin/forbanctl
++++ b/bin/forbanctl
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python2
+ # Forban - a simple link-local opportunistic p2p free software
+ #
+ # For more information : http://www.foo.be/forban/

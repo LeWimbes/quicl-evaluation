@@ -91,6 +91,8 @@ RUN apt-get update \
     lxterminal \
     tmux \
     wireshark \
+    libdaemon-dev \
+    python2 \
     && apt-get clean
 
 RUN echo 'custom_services_dir = /root/.coregui/custom_services' >> /etc/core/core.conf
@@ -111,9 +113,11 @@ COPY --from=ibrdtn-builder  /usr/local/lib/libibrdtn.so.1       /usr/lib/
 COPY --from=ibrdtn-builder  /usr/local/lib/libibrcommon.so.1    /usr/lib/
 # # SERVAL
 # COPY --from=serval-builder  /serval-dna/servald                 /usr/local/sbin/
-# # FORBAN
-# COPY                        forban                              /forban
-# COPY                        forban.diff                         /tmp/forban.diff
+# FORBAN
+COPY                        forban                              /forban
+COPY                        forban.diff                         /tmp/forban.diff
+COPY                        forban_python.diff                  /tmp/forban_python.diff
 
-# # Patch Forban's announce interval and logging
-# RUN cd /forban && patch -p1 < /tmp/forban.diff
+# Patch Forban's announce interval and logging
+RUN cd /forban && patch -p1 < /tmp/forban.diff
+RUN cd /forban && patch -p1 < /tmp/forban_python.diff
