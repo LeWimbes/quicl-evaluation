@@ -54,33 +54,15 @@ RUN make -j $(nproc)
 RUN make install
 
 
-# ### Build serval
-# FROM maciresearch/core_worker:0.4.2 AS serval-builder
-
-# RUN apt-get update \
-#     && apt-get install --no-install-recommends -yq \
-#     build-essential \
-#     autoconf \
-#     automake \
-#     libtool \
-#     grep \
-#     sed \
-#     gawk \
-#     jq \
-#     curl \
-#     git \
-#     libsodium-dev \
-#     gcc-5 \
-#     && apt-get clean
-
-# ADD serval-dna /serval-dna
-# WORKDIR /serval-dna
-# RUN autoreconf -f -i -I m4
-# ENV CFLAGS -Wno-error=deprecated-declarations -O1
-# ENV CC gcc-5
-# RUN ./configure
-# RUN make -j $(nproc) servald
-
+### DTN7-rs
+FROM maciresearch/core_worker:9.0.1 AS dtn7-rs-builder
+RUN wget https://github.com/dtn7/dtn7-rs/releases/download/v0.18.2/dtn7-0.18.2-x86_64-unknown-linux-gnu.tar.gz \
+    && tar xf dtn7-0.18.2-x86_64-unknown-linux-gnu.tar.gz \
+    && mv dtn7-0.18.2/bin/dtnd /dtnrs \
+    && mv dtn7-0.18.2/bin/dtnquery /dtnrsquery \
+    && mv dtn7-0.18.2/bin/dtnrecv /dtnrsrecv \
+    && mv dtn7-0.18.2/bin/dtnsend /dtnrssend \
+    && mv dtn7-0.18.2/bin/dtntrigger /dtnrstrigger
 
 ### CORE Container
 FROM maciresearch/core_worker:9.0.1
@@ -97,22 +79,26 @@ RUN apt-get update \
 
 RUN echo 'custom_services_dir = /root/.coregui/custom_services' >> /etc/core/core.conf
 
-
 # Force Serval to use its instance_path
 ENV BASH_ENV /root/.serval
 RUN echo 'export SERVALINSTANCE_PATH=$SESSION_DIR/`hostname`.conf' >> /root/.serval \
     && echo 'export SERVALINSTANCE_PATH=$SESSION_DIR/`hostname`.conf' >> /root/.bashrc
 
+
 # Install the software
 # DTN7
-COPY --from=dtn7-go-builder    /dtngod                           /usr/local/sbin/
+COPY --from=dtn7-go-builder    /dtngod                          /usr/local/sbin/
+# DTN7-RS
+COPY --from=dtn7-rs-builder /dtnrs                              /usr/local/sbin/
+COPY --from=dtn7-rs-builder /dtnrsquery                         /usr/local/sbin/
+COPY --from=dtn7-rs-builder /dtnrsrecv                          /usr/local/sbin/
+COPY --from=dtn7-rs-builder /dtnrssend                          /usr/local/sbin/
+COPY --from=dtn7-rs-builder /dtnrstrigger                       /usr/local/sbin/
 # IBR-DTN
 COPY --from=ibrdtn-builder  /usr/local/bin/dtnsend              /usr/local/sbin/
 COPY --from=ibrdtn-builder  /usr/local/sbin/dtnd                /usr/local/sbin/
 COPY --from=ibrdtn-builder  /usr/local/lib/libibrdtn.so.1       /usr/lib/
 COPY --from=ibrdtn-builder  /usr/local/lib/libibrcommon.so.1    /usr/lib/
-# # SERVAL
-# COPY --from=serval-builder  /serval-dna/servald                 /usr/local/sbin/
 # FORBAN
 COPY                        forban                              /forban
 COPY                        forban.diff                         /tmp/forban.diff
