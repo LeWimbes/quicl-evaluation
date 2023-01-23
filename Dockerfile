@@ -6,6 +6,35 @@ WORKDIR /dtn7-go
 RUN go build -race -buildvcs=false -o /dtngod ./cmd/dtnd
 
 
+### Build serval
+FROM maciresearch/core_worker:9.0.1 AS serval-builder
+
+RUN apt-get update \
+    && apt-get install --no-install-recommends -yq \
+    build-essential \
+    autoconf \
+    automake \
+    libtool \
+    grep \
+    sed \
+    gawk \
+    jq \
+    curl \
+    git \
+    libsodium-dev \
+    gcc-9 \
+    && apt-get clean
+
+ADD serval-dna /serval-dna
+WORKDIR /serval-dna
+RUN autoreconf -f -i -I m4
+# ENV CFLAGS -Wno-error=deprecated-declarations -O1
+ENV CC gcc-9
+RUN ./configure
+RUN make servald
+# RUN make -j $(nproc) servald
+
+
 ## Build ibrdtn
 FROM maciresearch/core_worker:0.4.2 AS ibrdtn-builder
 
@@ -94,6 +123,8 @@ COPY --from=dtn7-rs-builder /dtnrsquery                         /usr/local/sbin/
 COPY --from=dtn7-rs-builder /dtnrsrecv                          /usr/local/sbin/
 COPY --from=dtn7-rs-builder /dtnrssend                          /usr/local/sbin/
 COPY --from=dtn7-rs-builder /dtnrstrigger                       /usr/local/sbin/
+# SERVAL
+COPY --from=serval-builder  /serval-dna/servald                 /usr/local/sbin/
 # IBR-DTN
 COPY --from=ibrdtn-builder  /usr/local/bin/dtnsend              /usr/local/sbin/
 COPY --from=ibrdtn-builder  /usr/local/sbin/dtnd                /usr/local/sbin/
