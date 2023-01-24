@@ -51,12 +51,25 @@ class ServalService(CoreService):
     executables: tuple[str, ...] = ('servald', )
     dependencies = ()
     configs: tuple[str, ...] = ('serval.conf', 'keyring.dump', 'serval.sid')
-    startup: tuple[str, ...] = ('bash -c "servald keyring load keyring.dump; nohup servald start foreground > serval_run.log 2>&1 &"', )
     validate: tuple[str, ...] = ('bash -c "servald status"', )   # ps -C returns 0 if the process is found, 1 if not.
     validation_mode: ServiceMode = ServiceMode.NON_BLOCKING  # NON_BLOCKING uses the validate commands for validation.
     validation_timer: int = 1                        # Wait 1 second before validating service.
     validation_period: float = 0.5                     # Retry after 1 second if validation was not successful.
     shutdown: tuple[str, ...] = ('bash -c "servald stop"', )
+
+    @classmethod
+    def get_startup(cls, node: CoreNode) -> tuple[str, ...]:
+        startup_commands = []
+        start_serval = 'bash -c "servald keyring load keyring.dump; nohup servald start foreground > serval_run.log 2>&1 &"'
+
+        for _, netif in node.ifaces.items():
+            dev = netif.name
+            ip_addr = netif.get_ip4()
+
+            startup_commands.append(f'bash -c "ip address del {ip_addr} dev {dev}; ip address add {ip_addr} broadcast + dev {dev}"')
+
+        startup_commands.append(start_serval)
+        return tuple(startup_commands)
 
     @classmethod
     def generate_config(cls, node: CoreNode, filename: str) -> str:
