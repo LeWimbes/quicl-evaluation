@@ -67,3 +67,4 @@ dotcore/mobility/**
 dotcore/xmls/**
 **/__pycache__/**
 dotcore/gui.log
+Experiments/**
