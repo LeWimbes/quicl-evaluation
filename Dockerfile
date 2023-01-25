@@ -31,8 +31,7 @@ RUN autoreconf -f -i -I m4
 # ENV CFLAGS -Wno-error=deprecated-declarations -O1
 ENV CC gcc-9
 RUN ./configure
-RUN make servald
-# RUN make -j $(nproc) servald
+RUN make -j $(nproc) servald
 
 
 ## Build ibrdtn
@@ -105,6 +104,8 @@ RUN apt-get update \
     libdaemon-dev \
     python2 \
     && apt-get clean
+
+RUN pip3 install dtnclient
 
 RUN echo 'custom_services_dir = /root/.coregui/custom_services' >> /etc/core/core.conf
 
