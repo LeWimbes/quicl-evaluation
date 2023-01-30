@@ -8,7 +8,7 @@ class IbrDtnService(CoreService):
     dependencies: tuple[str, ...] = ()
     dirs: tuple[str, ...] = ("/ibrdtn_inbox", )
     configs: tuple[str, ...] = ('ibrdtn.conf', )
-    startup: tuple[str, ...] = ("bash -c 'dtnd -c ibrdtn.conf -D; sleep 2; pkill -INT dtnd; nohup dtnd -v --timestamp -c ibrdtn.conf > ibrdtn_run.log 2>&1 &'", )
+    startup: tuple[str, ...] = ("bash -c 'dtnd -c ibrdtn.conf -D; sleep 2; pkill -INT dtnd; nohup dtnd -v --timestamp -c ibrdtn.conf > ibrdtn.log 2>&1 &'", )
     validate: tuple[str, ...] = ("pgrep dtnd" ,)
     validation_mode: ServiceMode = ServiceMode.NON_BLOCKING
     validation_timer: int = 1

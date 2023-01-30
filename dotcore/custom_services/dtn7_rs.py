@@ -1,8 +1,8 @@
 from core.nodes.base import CoreNode
 from core.services.coreservices import CoreService, ServiceMode
 
-class Dtn7GoService(CoreService):
-    name: str = "dtn7-rs"
+class DTN7rsService(CoreService):
+    name: str = "DTN7Rs"
     group: str = "DTN"
     executables: tuple[str, ...] = ("dtnrs", )
     dependencies: tuple[str, ...] = ("DefaultRoute", )

@@ -1,8 +1,8 @@
 from core.nodes.base import CoreNode
 from core.services.coreservices import CoreService, ServiceMode
 
-class Dtn7GoService(CoreService):
-    name: str = "dtn7-go"
+class DTN7GoService(CoreService):
+    name: str = "DTN7Go"
     group: str = "DTN"
     executables: tuple[str, ...] = ("dtngod", )
     dependencies: tuple[str, ...] = ()

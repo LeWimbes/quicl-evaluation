@@ -1,10 +1,11 @@
 import time
 import pathlib
 
+from core.nodes.base import CoreNode
 
 class Software:
 
-    def __init__(self, session, seed):
+    def __init__(self, session):
         self.session = session
 
         # We have a 54 Mbit/s (6.75 MB/s) network, means it takes about
@@ -23,8 +24,8 @@ class Software:
     def init_software(self, node_name):
         pass
 
-    def send_files(self, sender_name, payload_folder_path, dst_name):
-        sender_node = self.session.get_object_by_name(sender_name)
+    def send_files(self, sender_id, payload_folder_path, dst_name):
+        sender_node = self.session.get_node(sender_id, CoreNode)
 
         payload_paths = pathlib.Path(payload_folder_path).glob('*.file')
 

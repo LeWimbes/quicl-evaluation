@@ -83,7 +83,7 @@ def collect_logs(session_dir):
             try:
                 shutil.move(src_file_path, dst_file_path)
                 prepare_log_file(new_file_name)
-            except IOError:
-                continue
+            except IOError as e:
+                print(f"Could not add binary file: {e}")
 
     prepare_log_file('parameters.py')

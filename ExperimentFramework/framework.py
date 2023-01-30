@@ -2,6 +2,7 @@ from time import time
 import sys
 import json
 import parameters
+import logging
 
 startTime = 0
 measurements = []
@@ -10,8 +11,10 @@ messages = []
 def _timeInMilliseconds():
     return int(round(time() * 1000))
 
+
 def _offsetFromStart():
     return _timeInMilliseconds() - startTime
+
 
 def start():
     global startTime, measurements
@@ -20,7 +23,8 @@ def start():
     parameters.requestedParams.add("simId")
     parameters.requestedParams.add("simInstanceId")
 
-def param(key, default = None):
+
+def param(key, default=None):
     if key not in parameters.params:
         if default is not None:
             return default
@@ -30,26 +34,31 @@ def param(key, default = None):
     parameters.requestedParams.add(key)
     return parameters.params[key]
 
+
 def log(key, message):
     messages.append({'key': str(key), 'offset': _offsetFromStart(), 'type': 0, 'message': str(message)})
+
 
 def addLogfile(filename):
     try:
         with open(filename, 'r') as myfile:
             log(filename, myfile.read())
-    except IOError:
-        warn(filename, "IO Error while adding logfile with MACI.")
+    except IOError as e:
+        logging.error(f"IO Error while adding logfile with MACI. {e}")
+
 
 def addBinaryFile(filename):
     print(f"adding binary file {filename}")
     try:
         with open("binary_files.txt", 'a') as myfile:
             myfile.write(filename + "\n")
-    except IOError:
-        warn(filename, "IO Error adding binary file with MACI.")
+    except IOError as e:
+        logging.error(f"IO Error adding binary file with MACI. {e}")
+
 
 def warn(key, message):
     messages.append({'key': str(key), 'offset': _offsetFromStart(), 'type': 1, 'message': str(message)})
+
 
 def is_number(s):
     try:
@@ -57,6 +66,7 @@ def is_number(s):
         return True
     except ValueError:
         return False
+
 
 def record(key, value, offset=None, key1=None, key2=None):
     if offset is not None:
@@ -66,30 +76,36 @@ def record(key, value, offset=None, key1=None, key2=None):
     # value = value.strip()
     if not is_number(value):
         warn("record", "can not add " + str(value) + " for records")
-        # breaks current work of Nikolas, but activate soon
-        #return
+    # breaks current work of Nikolas, but activate soon
+    # return
 
     measurements.append({'key': str(key), 'offset': offset, 'value': str(value), 'key1': str(key1), 'key2': str(key2)})
 
+
 def checkRequestedParams():
-    for (paramKey, paramValue) in [(k, v) for (k, v) in parameters.params.iteritems() if k not in parameters.requestedParams]:
-        warn("Framework", "Parameter " + str(paramKey) + " with value " + str(paramValue) + " was not requested by experiment")
+    for (paramKey, paramValue) in [(k, v) for (k, v) in parameters.params.items() if
+                                   k not in parameters.requestedParams]:
+        warn("Framework",
+             "Parameter " + str(paramKey) + " with value " + str(paramValue) + " was not requested by experiment")
+
 
 def loadTmpResults():
-        try:
-                with open('result_tmp.json', 'r') as file:
-                        for line in file:
-                                measurements.append(json.loads(line))
-        except IOError:
-                pass
+    try:
+        with open('result_tmp.json', 'r') as file:
+            for line in file:
+                measurements.append(json.loads(line))
+    except IOError as e:
+        logging.error(f"Could not load results: {e}")
+
 
 def loadTmpMessages():
-        try:
-                with open('message_tmp.json', 'r') as file:
-                        for line in file:
-                                messages.append(json.loads(line))
-        except IOError:
-                pass
+    try:
+        with open('message_tmp.json', 'r') as file:
+            for line in file:
+                messages.append(json.loads(line))
+    except IOError as e:
+        logging.error(f"Could not load messages: {e}")
+
 
 def stop():
     checkRequestedParams()

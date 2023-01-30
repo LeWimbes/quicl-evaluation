@@ -60,7 +60,7 @@ class ServalService(CoreService):
     @classmethod
     def get_startup(cls, node: CoreNode) -> tuple[str, ...]:
         startup_commands = []
-        start_serval = 'bash -c "servald keyring load keyring.dump; nohup servald start foreground > serval_run.log 2>&1 &"'
+        start_serval = 'bash -c "servald keyring load keyring.dump; nohup servald start foreground > servallog 2>&1 &"'
 
         for _, netif in node.ifaces.items():
             dev = netif.name

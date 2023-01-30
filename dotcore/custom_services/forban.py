@@ -12,7 +12,7 @@ class ForbanService(CoreService):
     validation_mode: ServiceMode = ServiceMode.NON_BLOCKING
     validation_timer: int = 1
     validation_period: float = 0.5
-    shutdown = ("bash -c 'forban/bin/forbanctl stop >> forban/forban_run.log 2>&1'", )
+    shutdown = ("bash -c 'forban/bin/forbanctl stop >> forban/forban.log 2>&1'", )
 
     @classmethod
     def generate_config(cls, node: CoreNode, filename: str) -> str:
@@ -55,6 +55,6 @@ mode = out
     def get_startup(cls, node):
         cmds = ["cp -r /forban {nd}",
                 "cp {nd}/forban.cfg {nd}/forban/cfg/",
-                "{nd}/forban/bin/forbanctl start >> {nd}/forban_run.log 2>&1"]
+                "{nd}/forban/bin/forbanctl start >> {nd}/forban.log 2>&1"]
         cmd_line = " && ".join([c.format(nd=node.directory) for c in cmds])
         return ("bash -c '{cmd_line}'".format(cmd_line=cmd_line), )
