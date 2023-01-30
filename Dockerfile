@@ -107,6 +107,8 @@ RUN apt-get update \
 
 RUN pip3 install dtnclient
 
+ENV PATH=/opt/core/venv/bin/:$PATH
+
 RUN echo 'custom_services_dir = /root/.coregui/custom_services' >> /etc/core/core.conf
 
 # Force Serval to use its instance_path
