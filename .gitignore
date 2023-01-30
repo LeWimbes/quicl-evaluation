@@ -68,3 +68,4 @@ dotcore/xmls/**
 **/__pycache__/**
 dotcore/gui.log
 Experiments/**
+binary_files/**
