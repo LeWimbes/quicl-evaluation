@@ -1,1 +1,1 @@
-{"paramValues":{"node_num":[2],"size":[1000],"num_payloads":[1],"software":["DTN7Go"]},"capabilities":[],"repetitions":1,"seeds":1}
+{"paramValues":{"size":[10000],"num_payloads":[5],"software":["DTN7Go"],"node_count":[32]},"capabilities":[],"repetitions":1,"seeds":1}
