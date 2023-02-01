@@ -5,7 +5,7 @@ class DTN7GoService(CoreService):
     name: str = "DTN7Go"
     group: str = "DTN"
     executables: tuple[str, ...] = ("dtngod", )
-    dependencies: tuple[str, ...] = ()
+    dependencies: tuple[str, ...] = ("bwm-ng", "pidstat")
     dirs: tuple[str, ...] = ()
     configs: tuple[str, ...] = ("dtngod.toml", )
     startup: tuple[str, ...] = (f'bash -c "nohup dtngod {configs[0]} &> dtngod.log &"', )

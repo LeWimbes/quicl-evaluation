@@ -60,7 +60,7 @@ def create_session(topo_path, _id, dtn_software):
 
     for node in session.nodes.values():
         if type(node) is CoreNode:
-            session.services.add_services(node, node.model, [dtn_software])
+            session.services.add_services(node, node.model, ["DefaultRoute", "bwm-ng", "pidstat", dtn_software])
 
     session.set_state(EventTypes.INSTANTIATION_STATE)
     errors = session.instantiate()

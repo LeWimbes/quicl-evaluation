@@ -5,9 +5,8 @@ class ForbanService(CoreService):
     name: str = "Forban"
     group: str = "DTN"
     executables: tuple[str, ...] = ()
-    dependencies: tuple[str, ...] = ()
+    dependencies: tuple[str, ...] = ("bwm-ng", "pidstat")
     configs: tuple[str, ...] = ("forban.cfg", )
-
     validate = ("bash -c 'if [ \"$(forban/bin/forbanctl status | tail -1 | cut -d\" \" -f2)\" == \"PID:False\" ]; then exit 1; else exit 0; fi'", ) # forbanctl prints  the PIDs of the procceses, if they are running. But PID:False is printed, then it is not running.
     validation_mode: ServiceMode = ServiceMode.NON_BLOCKING
     validation_timer: int = 1

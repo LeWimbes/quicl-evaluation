@@ -5,7 +5,7 @@ class DTN7rsService(CoreService):
     name: str = "DTN7Rs"
     group: str = "DTN"
     executables: tuple[str, ...] = ("dtnrs", )
-    dependencies: tuple[str, ...] = ("DefaultRoute", )
+    dependencies: tuple[str, ...] = ("DefaultRoute", "bwm-ng", "pidstat")
     dirs: tuple[str, ...] = ()
     configs: tuple[str, ...] = ("dtnrs.toml", )
     startup: tuple[str, ...] = (f'bash -c "RUST_BACKTRACE=full nohup dtnrs -c {configs[0]} &> dtnrs.log &"', )

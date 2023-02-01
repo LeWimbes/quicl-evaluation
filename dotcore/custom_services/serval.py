@@ -49,7 +49,7 @@ class ServalService(CoreService):
     name: str = "Serval"
     group: str = "DTN"
     executables: tuple[str, ...] = ('servald', )
-    dependencies = ()
+    dependencies: tuple[str, ...] = ("bwm-ng", "pidstat")
     configs: tuple[str, ...] = ('serval.conf', 'keyring.dump', 'serval.sid')
     validate: tuple[str, ...] = ('bash -c "servald status"', )   # ps -C returns 0 if the process is found, 1 if not.
     validation_mode: ServiceMode = ServiceMode.NON_BLOCKING  # NON_BLOCKING uses the validate commands for validation.

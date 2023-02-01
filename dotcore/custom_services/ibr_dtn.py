@@ -5,7 +5,7 @@ class IbrDtnService(CoreService):
     name: str = "IBRDTN"
     group: str = "DTN"
     executables: tuple[str, ...] = ("dtnd", "dtnsend")
-    dependencies: tuple[str, ...] = ()
+    dependencies: tuple[str, ...] = ("bwm-ng", "pidstat")
     dirs: tuple[str, ...] = ("/ibrdtn_inbox", )
     configs: tuple[str, ...] = ('ibrdtn.conf', )
     startup: tuple[str, ...] = ("bash -c 'dtnd -c ibrdtn.conf -D; sleep 2; pkill -INT dtnd; nohup dtnd -v --timestamp -c ibrdtn.conf > ibrdtn.log 2>&1 &'", )

@@ -103,6 +103,8 @@ RUN apt-get update \
     wireshark \
     libdaemon-dev \
     python2 \
+    bwm-ng \
+    sysstat \
     && apt-get clean
 
 RUN pip3 install dtnclient
