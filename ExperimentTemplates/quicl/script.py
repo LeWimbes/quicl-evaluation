@@ -24,6 +24,7 @@ from core.xml.corexml import CoreXmlReader
 from dtngod import DTN7Go
 from forban import Forban
 from ibr_dtn import IBRDTN
+from serval import Serval
 from log_files import collect_logs
 
 
