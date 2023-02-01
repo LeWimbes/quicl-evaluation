@@ -22,6 +22,7 @@ from core.services.coreservices import ServiceManager
 from core.xml.corexml import CoreXmlReader
 
 from dtngod import DTN7Go
+from forban import Forban
 from log_files import collect_logs
 
 
