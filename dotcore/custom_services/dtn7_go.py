@@ -14,6 +14,7 @@ class DTN7GoService(CoreService):
     validation_timer: int = 1
     validation_period: float = 0.5
     shutdown: tuple[str, ...] = ("pkill dtngod", )
+    config_data: dict[str, str] = {"cla": "mtcp"}
 
     @classmethod
     def generate_config(cls, node: CoreNode, filename: str) -> str:
@@ -24,7 +25,7 @@ node-id = "dtn://{node.name}/"
 inspect-all-bundles = true
 
 [logging]
-level = "debug"
+level = "info"
 report-caller = false
 format = "json"
 
@@ -40,7 +41,7 @@ websocket = true
 rest = true
 
 [[listen]]
-protocol = "quicl"
+protocol = "{cls.config_data['cla']}"
 endpoint = ":4556"
 [routing]
 algorithm = "epidemic"

@@ -14,6 +14,7 @@ class IbrDtnService(CoreService):
     validation_timer: int = 1
     validation_period: float = 0.5
     shutdown: tuple[str, ...] = ("pkill dtnd", )
+    config_data: dict[str, str] = {"cla": "dgram:ethernet"}
 
     @classmethod
     def generate_config(cls, node: CoreNode, filename: str) -> str:
@@ -26,15 +27,15 @@ net_autoconnect = 10
 net_interfaces = '''
 
         iface_config_template = '''
-net_lan{iface_id}_type = tcp
-net_lan{iface_id}_interface = {netif.name}
+net_lan{iface_id}_type = {cla}
+net_lan{iface_id}_interface = {name}
 net_lan{iface_id}_port = 4556
 '''
 
         for iface_id in node.ifaces:
-            cfg += "lan{} ".format(iface_id)
+            cfg += f"lan{iface_id} "
 
         for iface_id, netif in node.ifaces.items():
-            cfg += iface_config_template.format(**locals())
+            cfg += iface_config_template.format(cla=cls.config_data['cla'], iface_id=iface_id, name=netif.name)
 
         return cfg

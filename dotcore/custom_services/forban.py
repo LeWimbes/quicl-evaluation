@@ -12,6 +12,7 @@ class ForbanService(CoreService):
     validation_timer: int = 1
     validation_period: float = 0.5
     shutdown = ("bash -c 'forban/bin/forbanctl stop >> forban/forban.log 2>&1'", )
+    config_data: dict[str, str] = {"cla": None}
 
     @classmethod
     def generate_config(cls, node: CoreNode, filename: str) -> str:

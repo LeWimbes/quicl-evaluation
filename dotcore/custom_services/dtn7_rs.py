@@ -14,6 +14,7 @@ class DTN7rsService(CoreService):
     validation_timer: int = 1
     validation_period: float = 0.5
     shutdown: tuple[str, ...] = ("pkill -9 dtnrs", )
+    config_data: dict[str, str] = {"cla": "mtcp"}
 
     @classmethod
     def generate_config(cls, node: CoreNode, filename: str) -> str:
@@ -33,7 +34,7 @@ janitor = "10s"
 interval = "2s"
 peer-timeout = "20s"
 [convergencylayers]
-cla.0.id = "mtcp"
+cla.0.id = "{cls.config_data['cla']}"
 cla.0.port = 16163
 [endpoints]
 local.0 = "incoming"

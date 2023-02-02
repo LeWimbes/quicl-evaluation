@@ -4,20 +4,21 @@ import time
 import os
 import shutil
 
+import netaddr
+
 import framework
 
 from core.emulator.coreemu import CoreEmu
-from core.emulator.data import IpPrefixes
+from core.emulator.data import InterfaceData
 from core.emulator.enumerations import EventTypes
-from core.nodes.base import CoreNode, Position, CoreNodeOptions
+from core.nodes.base import CoreNode, CoreNodeOptions
 from core.services.coreservices import ServiceManager
 from core.xml.corexml import CoreXmlReader
 
 from log_files import collect_logs
 
 
-def create_session(_id, dtn_software, node_count):
-    ip_prefixes = IpPrefixes(ip4_prefix="10.0.0.0/24")
+def create_session(_id, dtn_software, node_count, cla):
 
     coreemu = CoreEmu()
     session = coreemu.create_session(_id=_id)
@@ -34,19 +35,23 @@ def create_session(_id, dtn_software, node_count):
 
     nodes = []
     for node_num in range(1, node_count + 1):
-        position = Position(x=node_num*10, y=node_num*10)
-
-        node = session.add_node(CoreNode, position=position, name=f"n{node_num}", options=CoreNodeOptions(model="prouter"))
-
-        iface1 = ip_prefixes.create_iface(node)
-        iface2 = ip_prefixes.create_iface(node)
+        node = session.add_node(CoreNode, name=f"n{node_num}", options=CoreNodeOptions(model="prouter"))
 
         session.services.add_services(node, node.model, ["DefaultRoute", "bwm-ng", "pidstat", dtn_software])
+        service = session.services.get_service(node.id, dtn_software, default_service=True)
+        service.config_data['cla'] = cla
 
-        nodes.append((node, iface1, iface2))
+        nodes.append(node)
 
+    ip_netmask = "24"
     for node_a, node_b in zip(nodes[:-1], nodes[1:]):
-        session.add_link(node_a[0].id, node_b[0].id, node_a[2], node_b[1])
+        ip1 = f"10.0.{node_a.id}.1"
+        ip2 = f"10.0.{node_a.id}.2"
+
+        iface1 = InterfaceData(ip4=ip1, ip4_mask=ip_netmask)
+        iface2 = InterfaceData(ip4=ip2, ip4_mask=ip_netmask)
+
+        session.add_link(node_a.id, node_b.id, iface1, iface2)
 
     session.set_state(EventTypes.INSTANTIATION_STATE)
     errors = session.instantiate()

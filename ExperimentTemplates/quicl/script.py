@@ -1,7 +1,8 @@
 ### ENV int node_count "How many nodes should be emulated"
-### ENV int size "Size of payload to be sent in bytes"
+### ENV int payload_size "Size of payload to be sent in bytes"
 ### ENV int num_payloads "How many payloads should be sent"
 ### ENV string software "Which DTN software should be used"
+### ENV string cla "Which CLA to use (if applicalbe)"
 
 import os
 import sys
@@ -36,7 +37,7 @@ if __name__ in ["__main__", "__builtin__"]:
     framework.start()
 
     # Prepare experiment
-    payload_path = create_payloads({{size}}, {{num_payloads}})
+    payload_path = create_payloads({{payload_size}}, {{num_payloads}})
 
     _ch = logging.StreamHandler(sys.stdout)
     # _ch = logging.FileHandler('core_session.log')
@@ -46,7 +47,7 @@ if __name__ in ["__main__", "__builtin__"]:
     logger.addHandler(_ch)
     logger.setLevel(logging.DEBUG)
 
-    session = create_session({{simInstanceId}}, "{{software}}", {{node_count}})
+    session = create_session({{simInstanceId}}, "{{software}}", {{node_count}}, "{{cla}}")
     if session is None:
         cleanup_experiment(session, payload_path)
         sys.exit(1)
