@@ -9,7 +9,7 @@ import netaddr
 import framework
 
 from core.emulator.coreemu import CoreEmu
-from core.emulator.data import InterfaceData
+from core.emulator.data import InterfaceData, LinkOptions
 from core.emulator.enumerations import EventTypes
 from core.nodes.base import CoreNode, CoreNodeOptions
 from core.services.coreservices import ServiceManager
@@ -44,6 +44,7 @@ def create_session(_id, dtn_software, node_count, cla):
         nodes.append(node)
 
     ip_netmask = "24"
+    link_options = LinkOptions(bandwidth=54_000_000, delay=800, jitter=200, loss=10)
     for node_a, node_b in zip(nodes[:-1], nodes[1:]):
         ip1 = f"10.0.{node_a.id}.1"
         ip2 = f"10.0.{node_a.id}.2"
@@ -51,7 +52,7 @@ def create_session(_id, dtn_software, node_count, cla):
         iface1 = InterfaceData(ip4=ip1, ip4_mask=ip_netmask)
         iface2 = InterfaceData(ip4=ip2, ip4_mask=ip_netmask)
 
-        session.add_link(node_a.id, node_b.id, iface1, iface2)
+        session.add_link(node_a.id, node_b.id, iface1, iface2, link_options)
 
     session.set_state(EventTypes.INSTANTIATION_STATE)
     errors = session.instantiate()
