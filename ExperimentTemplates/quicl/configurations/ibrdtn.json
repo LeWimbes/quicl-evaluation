@@ -1,1 +1,1 @@
-{"paramValues":{"num_payloads":[5],"software":["IBRDTN"],"node_count":[32],"cla":["tcp","udp"],"payload_size":[1000],"bps":[1]},"capabilities":[],"repetitions":1,"seeds":1}
+{"paramValues":{"num_payloads":[1,10,100],"software":["IBRDTN"],"node_count":[32,2,16],"cla":["tcp","udp"],"payload_size":[1000,100000,1000000],"bps":[1,10,100]},"capabilities":[],"repetitions":1,"seeds":1}
