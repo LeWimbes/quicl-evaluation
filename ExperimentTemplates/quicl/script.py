@@ -1,6 +1,7 @@
 ### ENV int node_count "How many nodes should be emulated"
 ### ENV int payload_size "Size of payload to be sent in bytes"
 ### ENV int num_payloads "How many payloads should be sent"
+### ENV int bps "How many bundles per second to send"
 ### ENV string software "Which DTN software should be used"
 ### ENV string cla "Which CLA to use (if applicalbe)"
 
@@ -40,7 +41,6 @@ if __name__ in ["__main__", "__builtin__"]:
     payload_path = create_payloads({{payload_size}}, {{num_payloads}})
 
     _ch = logging.StreamHandler(sys.stdout)
-    # _ch = logging.FileHandler('core_session.log')
     _ch.setLevel(logging.DEBUG)
     _ch.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
     logger = logging.getLogger()
@@ -57,7 +57,7 @@ if __name__ in ["__main__", "__builtin__"]:
     # Run the experiment
     software = {{software}}(session)
     software.init_software(1)
-    software.send_files(1, payload_path, "n{{node_count}}")
+    software.send_files(1, payload_path, "n{{node_count}}", {{bps}})
     software.wait_for_arrivals({{node_count}}, {{num_payloads}})
     time.sleep(10)
 

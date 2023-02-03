@@ -1,1 +1,1 @@
-{"paramValues":{"num_payloads":[5],"software":["DTN7Rs"],"node_count":[32],"cla":["mtcp","tcp","http"],"payload_size":[1000]},"capabilities":[],"repetitions":1,"seeds":1}
+{"paramValues":{"num_payloads":[5],"software":["DTN7Rs"],"node_count":[32],"cla":["mtcp","tcp","http"],"payload_size":[1000],"bps":[1]},"capabilities":[],"repetitions":1,"seeds":1}

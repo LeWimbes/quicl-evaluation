@@ -1,5 +1,6 @@
 import time
 import pathlib
+import multiprocessing as mp
 
 from core.nodes.base import CoreNode
 
@@ -24,13 +25,18 @@ class Software:
     def init_software(self, node_name):
         pass
 
-    def send_files(self, sender_id, payload_folder_path, dst_name):
+    def send_files(self, sender_id, payload_folder_path, dst_name, bps):
         sender_node = self.session.get_node(sender_id, CoreNode)
 
         payload_paths = pathlib.Path(payload_folder_path).glob('*.file')
 
+        wait_time = 1 / bps
         for payload_path in payload_paths:
-            self.send_file(sender_node, payload_path, dst_name)
+            print("Sending payload")
+            mp.Process(target=self.send_file, args=(sender_node, payload_path, dst_name)).start()
+
+            time.sleep(wait_time)
+
 
     def send_file(self, sender_node, payload_path, dst_name):
         pass
