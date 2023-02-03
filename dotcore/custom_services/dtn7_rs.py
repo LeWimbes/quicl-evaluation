@@ -18,7 +18,7 @@ class DTN7rsService(CoreService):
 
     @classmethod
     def generate_config(cls, node: CoreNode, filename: str) -> str:
-        return f"""
+        cfg =  f"""
 nodeid = "{node.name}"
 beacon-period = true
 generate-status-reports = false
@@ -26,17 +26,35 @@ parallel-bundle-processing = false
 webport = 3000
 workdir = "store_{node.name}"
 db = "mem"
+
 [routing]
 strategy = "epidemic"
+
 [core]
 janitor = "10s"
-[discovery]
-interval = "2s"
-peer-timeout = "20s"
+
 [convergencylayers]
 cla.0.id = "{cls.config_data['cla']}"
 cla.0.port = 16163
+
 [endpoints]
 local.0 = "incoming"
 local.1 = "null"
+
+[discovery]
+interval = "2s"
+peer-timeout = "20s"
+
+[discovery_destinations]
 """
+
+        discovery_config_template = '''
+target.{iface_id}.destination = "{bcast}"
+'''
+
+        for iface_id, netif in node.ifaces.items():
+            bcast = str(netif.get_ip4().broadcast)
+
+            cfg += discovery_config_template.format(iface_id=iface_id, bcast=bcast)
+
+        return cfg
