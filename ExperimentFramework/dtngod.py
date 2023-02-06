@@ -1,4 +1,3 @@
-import json
 import time
 
 from core.nodes.base import CoreNode
@@ -32,12 +31,7 @@ class DTN7Go(Software):
                     time.sleep(0.1)
                     continue
 
-                try:
-                    json_obj = json.loads(line)
-                    if json_obj["msg"] == "Received bundle for local delivery":
-                        arrived_payloads += 1
-                        if arrived_payloads == payload_count:
-                            break
-                except Exception as e:
-                    print(e)
-                    continue
+                if "level=info msg=\"Received bundle for local delivery\" bundle=\"dtn://" in line:
+                    arrived_payloads += 1
+                    if arrived_payloads == payload_count:
+                        break

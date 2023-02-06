@@ -27,7 +27,7 @@ inspect-all-bundles = true
 [logging]
 level = "info"
 report-caller = false
-format = "json"
+format = "text"
 
 [discovery]
 ipv4 = true
