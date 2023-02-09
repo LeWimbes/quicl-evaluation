@@ -5,11 +5,18 @@ from datetime import datetime
 from typing import Dict, List, Union
 
 
-def log_entry_time(log_entry):
-    time_string = log_entry["time"][:26]
+def log_entry_time(line):
+    time_string = line.split(' ')[0].split('"')[1]
     if time_string[-1] == "Z":
         time_string = time_string[:-1]
-    return datetime.strptime(time_string, "%Y-%m-%dT%H:%M:%S.%f")
+    return datetime.strptime(time_string, "%H:%M:%S.%f")
+
+
+def log_entry_bundle_id(line):
+    sub_line = line.split("bundle=\"", 1)[1]
+
+    return sub_line.split('"')[0]
+
 
 def parse_node(
     node_path,
@@ -29,8 +36,6 @@ def parse_node(
     with open(node_path, "r") as f:
         for line in f.readlines():
             try:
-                entry = # TODO: Parse line
-
                 if 'level=info msg="REST client sent bundle" bundle="dtn://n1/' in line:  # A bundle is created
                     event = "creation"
 
@@ -46,15 +51,17 @@ def parse_node(
                 else:
                     continue
 
-                events = bundles.get(entry["bundle"], [])
+                bundle_id = log_entry_bundle_id(line)
+
+                events = bundles.get(bundle_id, [])
                 events.append(
                     {
                         "Simulation ID": sim_instance_id,
                         "Payload Size": payload_size,
-                        "Timestamp": log_entry_time(entry),
+                        "Timestamp": log_entry_time(line),
                         "Event": event,
                         "Node": node_id,
-                        "Bundle": entry["bundle"],
+                        "Bundle": bundle_id,
                         "Software": software,
                         "Bundles per Second": bps,
                         "CLA": cla,
@@ -62,7 +69,7 @@ def parse_node(
                         "# Payloads": num_payloads,
                     }
                 )
-                bundles[entry["bundle"]] = events
+                bundles[bundle_id] = events
 
             except KeyError as err:
                 print(f"Key Error: {err}, node: {node_id}, line: {line}", flush=True)
