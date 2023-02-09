@@ -4,14 +4,11 @@ import datetime
 
 import json
 
-from typing import Dict, List, Union, Tuple
+from typing import Dict, Union
 
 import pandas as pd
 
 pd.set_option("display.max_rows", 500)
-
-from .eval_helpers import parse_parameters
-
 
 BWM_HEADERS_COMPLETE = [
     "ts",
@@ -36,7 +33,7 @@ BWM_HEADERS = ["ts", "iface", "bytes_out/s"]
 
 def parse_instance_parameters(path: str) -> Dict[str, Union[str, int]]:
     params: Dict[str, Union[str, int]] = {}
-    with open(path, "r") as f:
+    with open(os.path.join(path, "parameters.py"), "r") as f:
         # I don't know any better way to do this
         # I tried executing the code with exec() and then accessing the assigned variables
         # but that doesn't work. Probably because of some namespacing issue...
@@ -64,31 +61,31 @@ def parse_bwm(bwm_path):
 
     df["ts"] = df["ts"].astype(int)
     df["ts"] = pd.to_datetime(df["ts"], unit="s")
-    df["node"] = os.path.basename(bwm_path).split(".")[0]
+    df["Node"] = os.path.basename(bwm_path).split(".")[0]
 
     dir_path = os.path.dirname(bwm_path)
-    parameters = parse_parameters(dir_path)
+    parameters = parse_instance_parameters(dir_path)
 
-    df["routing"] = parameters["routing"]
-    df["id"] = parameters["simInstanceId"]
+    df["Software"] = parameters["software"]
+    df["Bundles per Second"] = parameters["bps"]
+    df["CLA"] = parameters["cla"]
+    df["# Node"] = parameters["node_count"]
+    df["# Payloads"] = parameters["num_payloads"]
+    df["Payload Size"] = parameters["payload_size"]
+    df["Simulation ID"] = parameters["simInstanceId"]
 
     return df
 
 
 def parse_bwms_instance(instance_path):
-    param_path = os.path.join(instance_path, "parameters.py")
-    params = parse_instance_parameters(path=param_path)
-
-    if params["payload_size"] == 10000000: # or params["bundles_per_node"] != 100 or params["routing"] not in ["epidemic", "cadr_epidemic", "cadr_responders"]:
-        return pd.DataFrame()
-    print(f"Parsing configuarion {params['payload_size']}, {params['bundles_per_node']}, {params['routing']} in {instance_path}")
+    print(f"Parsing configuarion {instance_path}")
 
     bwm_paths = glob.glob(os.path.join(instance_path, "*.conf_bwm.csv"))
 
     parsed_bwms = [parse_bwm(p) for p in bwm_paths]
     df = pd.concat(parsed_bwms)
 
-    df = df.sort_values(["ts", "node"]).reset_index()
+    df = df.sort_values(["ts", "Node"]).reset_index()
     df["dt"] = (df["ts"] - df["ts"].iloc[0]).dt.total_seconds()
 
     return df
@@ -103,10 +100,10 @@ def parse_bwms(binary_files_path):
 
     parsed_instances = [parse_bwms_instance(path) for path in instance_paths]
     df = pd.concat(parsed_instances, sort=False)
-    df = df.sort_values(["ts", "id", "node"]).reset_index()
+    df = df.sort_values(["Software", "CLA", "Bundles per Second", "# Node", "# Payloads", "Payload Size", "ts"]).reset_index()
 
     df = df.drop(columns=["level_0", "index"])
-    df = df.groupby(["id", "routing", "dt"]).sum()
+    df = df.groupby(["Software", "CLA", "Bundles per Second", "# Node", "# Payloads", "Payload Size", "dt"]).sum().reset_index()
     df["Mbit/s"] = df["bytes_out/s"] / 1024 / 1024 * 8
 
     return df

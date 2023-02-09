@@ -7,11 +7,13 @@ from typing import Dict, List, Union, Tuple
 
 import pandas as pd
 
-import softwares.dtn7go
+import data_handlers.softwares.dtn7go
+import data_handlers.softwares.dtn7rs
 
 
 parsing_functions = {
-    "DTN7Go": softwares.dtn7go.parse_bundle_events_instance
+    "DTN7Go": data_handlers.softwares.dtn7go.parse_bundle_events_instance,
+    "DTN7Rs": data_handlers.softwares.dtn7rs.parse_bundle_events_instance
 }
 
 
@@ -38,34 +40,37 @@ def parse_bundle_events_instance(
     return parsing_functions[software](instance_path, params)
 
 
-def parse_bundle_events(experiment_path: str) -> pd.DataFrame:
-    experiment_paths = glob.glob(os.path.join(experiment_path, "*"))
+def parse_bundle_events(experiment_path: str, experiment_ids: List[int]) -> pd.DataFrame:
 
-    instance_paths = []
-    for experiment_path in experiment_paths:
-        instance_paths.extend(glob.glob(os.path.join(experiment_path, "*")))
+    event_frames = []
+    for experiment_id in experiment_ids:
+        instance_paths = glob.glob(os.path.join(experiment_path, str(experiment_id), "*"))
 
-    parsed_instances = [parse_bundle_events_instance(path) for path in instance_paths]
-    bundle_events: List[Dict[str, Union[str, datetime]]] = []
-    for instance in parsed_instances:
-        for node in instance:
-            for _, events in node.items():
-                bundle_events += events
-    event_frame = pd.DataFrame(bundle_events)
-    event_frame = event_frame.sort_values(by="timestamp")
+        parsed_instances = [parse_bundle_events_instance(path) for path in instance_paths]
+        bundle_events: List[Dict[str, Union[str, datetime]]] = []
+        for instance in parsed_instances:
+            for node in instance:
+                for _, events in node.items():
+                    bundle_events += events
+        event_frame = pd.DataFrame(bundle_events)
+        event_frame = event_frame.sort_values(by="Timestamp")
 
-    print("Computing time delta", flush=True)
-    time_df = pd.DataFrame()
-    for _, instance in event_frame.groupby("Simulation ID"):
-        instance_start = instance["timestamp"].iloc[0]
-        instance["timestamp_relative"] = instance["timestamp"] - instance_start
-        time_df = time_df.append(instance)
+        print("Computing time delta", flush=True)
+        time_df = pd.DataFrame()
+        for _, instance in event_frame.groupby("Simulation ID"):
+            instance_start = instance["Timestamp"].iloc[0]
+            instance["Relative Timestamp"] = instance["Timestamp"] - instance_start
+            time_df = time_df.append(instance)
 
-    event_frame = time_df
+        event_frame = time_df
+
+        event_frames.append(event_frame)
+
+    df = pd.concat(event_frames)
 
     print("Parsing done", flush=True)
 
-    return event_frame
+    return df
 
 
 if __name__ == "__main__":
