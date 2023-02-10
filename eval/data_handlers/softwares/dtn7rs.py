@@ -7,7 +7,6 @@ from typing import Dict, List, Union
 
 def log_entry_time(line):
     time_string = line.split('Z')[0].strip()
-    # time_string = time_string[:-1] # Remove trailing Z
     return datetime.strptime(time_string, "%Y-%m-%dT%H:%M:%S.%f")
 
 
