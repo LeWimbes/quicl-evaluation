@@ -24,6 +24,7 @@ discovery_interval = 2
 routing = epidemic
 routing_forwarding = yes
 net_autoconnect = 10
+fragmentation = no
 net_interfaces = '''
 
         iface_config_template = '''
