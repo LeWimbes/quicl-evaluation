@@ -79,6 +79,7 @@ class ServalService(CoreService):
 interfaces.0.type=ethernet
 server.motd="{}"
 api.restful.users.pyserval.password=pyserval
+debug.rhizome=1
 '''.format(node.name)
 
         if filename == "keyring.dump":
