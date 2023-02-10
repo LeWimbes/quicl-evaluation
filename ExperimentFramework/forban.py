@@ -11,7 +11,7 @@ class Forban(Software):
     def send_file(self, sender_node, payload_path, dst_name):
         with open(f"{sender_node.directory}/forban_insert.log", "a") as insert_log:
             timestamp = time.time()
-            insert_log.write(f"{sender_node.name},{timestamp},{payload_path},{dst_name}")
+            insert_log.write(f"{sender_node.name},{timestamp},{payload_path},{dst_name}\n")
 
         sender_node.cmd(f"bash -c 'cp {payload_path} forban/var/share/'")
 

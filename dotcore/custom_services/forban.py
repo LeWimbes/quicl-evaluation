@@ -29,7 +29,7 @@ class ForbanService(CoreService):
 name = {node_name}
 version = 0.0.34
 
-logging = INFO
+logging = DEBUG
 loggingsizemax = 20000000
 
 disabled_ipv6 = 1
