@@ -66,7 +66,7 @@ def parse_bundle_events(experiment_path: str, experiment_ids: List[int]) -> pd.D
         for _, instance in event_frame.groupby("Simulation ID"):
             instance_start = instance["Timestamp"].iloc[0]
             instance["Relative Timestamp"] = instance["Timestamp"] - instance_start
-            time_df = time_df.append(instance)
+            time_df = pd.concat([time_df, instance])
 
         event_frame = time_df
 
