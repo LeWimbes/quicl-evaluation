@@ -36,7 +36,7 @@ def parse_node(
     with open(node_path, "r") as f:
         for line in f.readlines():
             try:
-                if 'level=info msg="REST client sent bundle" bundle="dtn://n1/' in line:  # A bundle is created
+                if 'level=info msg="Transmission of bundle requested" bundle="dtn://n1/' in line:  # A bundle is created
                     event = "creation"
 
                 elif 'level=info msg="Sending bundle to a CLA (ConvergenceSender)" bundle="dtn://n1/' in line: # A bundle is about to be sent

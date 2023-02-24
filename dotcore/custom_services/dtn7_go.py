@@ -40,6 +40,11 @@ address = "localhost:8080"
 websocket = true
 rest = true
 
+[cron]
+check-bundles = "10s"
+clean-store = "10m"
+clean-id = "1h"
+
 [[listen]]
 protocol = "{cls.config_data['cla']}"
 endpoint = ":4556"
