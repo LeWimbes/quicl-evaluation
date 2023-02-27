@@ -57,6 +57,7 @@ if __name__ in ["__main__", "__builtin__"]:
     # Run the experiment
     software = {{software}}(session)
     software.init_software(1)
+    software.init_software({{node_count}})
     software.send_files(1, payload_path, "n{{node_count}}", {{bps}})
     software.wait_for_arrivals({{node_count}}, {{num_payloads}})
     time.sleep(10)

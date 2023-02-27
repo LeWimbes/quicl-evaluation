@@ -8,10 +8,10 @@ class DTN7Go(Software):
 
     def init_software(self, node_id):
         node = self.session.get_node(node_id, CoreNode)
-        node.cmd(f"dtnclient register -r /registration.json dtn://n{node_id}/")
+        node.cmd(f"dtnclient register -r {node.directory}/registration.json dtn://n{node_id}/")
 
     def send_file(self, sender_node, payload_path, dst_name):
-        sender_node.cmd(f"dtnclient send -r /registration.json -p {payload_path} dtn://{dst_name}/")
+        sender_node.cmd(f"dtnclient send -r {sender_node.directory}//registration.json -p {payload_path} dtn://{dst_name}/")
 
     def wait_for_arrivals(self, node_id, payload_count):
         node = self.session.get_node(node_id, CoreNode)
@@ -31,7 +31,7 @@ class DTN7Go(Software):
                     time.sleep(0.1)
                     continue
 
-                if "level=info msg=\"Received bundle for local delivery\" bundle=\"dtn://" in line:
+                if 'level=info msg="REST Application Agent delivering message to a client\'s inbox" bundle="dtn://n1/' in line:
                     arrived_payloads += 1
                     if arrived_payloads == payload_count:
                         break
