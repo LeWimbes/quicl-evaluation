@@ -7,7 +7,7 @@ from software import Software
 class DTN7Go(Software):
 
     def init_software(self, node_id):
-        node = self.session.get_node(node_id, CoreNode)
+        node = self.session.get_node(int(node_id), CoreNode)
         node.cmd(f"dtnclient register -r {node.directory}/registration.json dtn://n{node_id}/")
 
     def send_file(self, sender_node, payload_path, dst_name):
