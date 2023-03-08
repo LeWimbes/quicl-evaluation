@@ -2,6 +2,7 @@
 ### ENV int payload_size "Size of payload to be sent in bytes"
 ### ENV int num_payloads "How many payloads should be sent"
 ### ENV int bps "How many bundles per second to send"
+### ENV int loss "How much loss the channels should have"
 ### ENV string software "Which DTN software should be used"
 ### ENV string cla "Which CLA to use (if applicalbe)"
 
@@ -47,7 +48,7 @@ if __name__ in ["__main__", "__builtin__"]:
     logger.addHandler(_ch)
     logger.setLevel(logging.DEBUG)
 
-    session = create_session({{simInstanceId}}, "{{software}}", {{node_count}}, "{{cla}}")
+    session = create_session({{simInstanceId}}, "{{software}}", {{node_count}}, "{{cla}}", {{loss}})
     if session is None:
         cleanup_experiment(session, payload_path)
         sys.exit(1)

@@ -18,7 +18,7 @@ from core.xml.corexml import CoreXmlReader
 from log_files import collect_logs
 
 
-def create_session(_id, dtn_software, node_count, cla):
+def create_session(_id, dtn_software, node_count, cla, loss):
 
     coreemu = CoreEmu()
     session = coreemu.create_session(_id=_id)
@@ -44,7 +44,7 @@ def create_session(_id, dtn_software, node_count, cla):
         nodes.append(node)
 
     ip_netmask = "24"
-    link_options = LinkOptions(bandwidth=54_000_000, delay=800, jitter=200, loss=10)
+    link_options = LinkOptions(bandwidth=54_000_000, delay=800, jitter=200, loss=loss)
     for node_a, node_b in zip(nodes[:-1], nodes[1:]):
         ip1 = f"10.0.{node_a.id}.1"
         ip2 = f"10.0.{node_a.id}.2"
