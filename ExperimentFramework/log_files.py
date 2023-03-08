@@ -31,25 +31,29 @@ excluded_files = [
 ]
 
 
+def get_chunk(file_object, chunk_size=20000000):
+    """Lazy function (generator) to read a file piece by piece.
+    Default chunk size: 1k."""
+    while True:
+        data = file_object.read(chunk_size)
+        if not data:
+            break
+        yield data
+
 
 def prepare_log_file(input_file):
     total_file_size = os.path.getsize(input_file)
 
     if total_file_size > 20000000:
-        too_big_file = open(input_file, 'rb')
 
-        def get_chunk():
-            return too_big_file.read(20000000)
-
-        chunk_count = 0
-        for chunk in iter(get_chunk, ''):
-            chunk_path = '{}_chunk{}'.format(input_file, chunk_count)
-            with open(chunk_path, 'wb') as chunk_file:
-                chunk_file.write(chunk)
-                framework.addBinaryFile(chunk_path)
-            chunk_count = chunk_count + 1
-
-        too_big_file.close()
+        with open(input_file, "rb") as f:
+            chunk_count = 0
+            for chunk in get_chunk(f):
+                chunk_path = '{}_chunk{}'.format(input_file, chunk_count)
+                with open(chunk_path, 'wb') as chunk_file:
+                    chunk_file.write(chunk)
+                    framework.addBinaryFile(chunk_path)
+                chunk_count = chunk_count + 1
 
     else:
         framework.addBinaryFile(input_file)
