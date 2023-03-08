@@ -2,11 +2,9 @@ import glob
 import os
 import json
 
-from typing import Dict, List, Union, Tuple
+from typing import Dict, Union
 
 import pandas as pd
-
-from .eval_helpers import parse_parameters
 
 
 PIDSTAT_NUMERICS = [
@@ -33,7 +31,7 @@ PIDSTAT_NUMERICS = [
 
 def parse_instance_parameters(path: str) -> Dict[str, Union[str, int]]:
     params: Dict[str, Union[str, int]] = {}
-    with open(path, "r") as f:
+    with open(os.path.join(path, "parameters.py"), "r") as f:
         # I don't know any better way to do this
         # I tried executing the code with exec() and then accessing the assigned variables
         # but that doesn't work. Probably because of some namespacing issue...
@@ -58,10 +56,8 @@ def parse_pidstat_file(pidstat_path):
 
         pidstat_df = pd.DataFrame(stats_list, columns=csv_header)
 
-        # prepend log modification date time, convert to datetime
-        # pidstat_df["Time"] = str(modify_date) + " " + pidstat_df["Time"]
         pidstat_df["Time"] = pd.to_datetime(pidstat_df["Time"])
-        pidstat_df["node"] = node
+        pidstat_df["Node"] = node
 
         pidstat_df[PIDSTAT_NUMERICS] = pidstat_df[PIDSTAT_NUMERICS].apply(pd.to_numeric)
 
@@ -82,29 +78,29 @@ def parse_pidstat_file(pidstat_path):
         ]
 
         dir_path = os.path.dirname(pidstat_path)
-        parameters = parse_parameters(dir_path)
+        parameters = parse_instance_parameters(dir_path)
 
-        pidstat_df["routing"] = parameters["routing"]
-        pidstat_df["id"] = parameters["simInstanceId"]
+        pidstat_df["Software"] = parameters["software"]
+        pidstat_df["Bundles per Second"] = parameters["bps"]
+        pidstat_df["CLA"] = parameters["cla"]
+        pidstat_df["# Node"] = parameters["node_count"]
+        pidstat_df["# Payloads"] = parameters["num_payloads"]
+        pidstat_df["Payload Size"] = parameters["payload_size"]
+        pidstat_df["Simulation ID"] = parameters["simInstanceId"]
 
         return pidstat_df
 
 
 def parse_pidstat_instance(instance_path):
-    param_path = os.path.join(instance_path, "parameters.py")
-    params = parse_instance_parameters(path=param_path)
+    print(f"Parsing configuarion {instance_path}")
 
-    if params["payload_size"] == 10000000: # or params["bundles_per_node"] != 100 or params["routing"] not in ["epidemic", "cadr_epidemic", "cadr_responders"]:
-        return pd.DataFrame()
-    print(f"Parsing configuarion {params['payload_size']}, {params['bundles_per_node']}, {params['routing']} in {instance_path}")
-
-    pidstat_paths = glob.glob(os.path.join(instance_path, "*.conf_pidstat"))
+    pidstat_paths = glob.glob(os.path.join(instance_path, "*.conf_pidstat.log"))
 
     parsed_pidstats = [parse_pidstat_file(path) for path in pidstat_paths]
 
     pidstat_df = pd.concat(parsed_pidstats)
 
-    pidstat_df = pidstat_df.sort_values(["Time", "node"]).reset_index()
+    pidstat_df = pidstat_df.sort_values(["Time", "Node"]).reset_index()
     pidstat_df["dt"] = (
         pidstat_df["Time"] - pidstat_df["Time"].iloc[0]
     ).dt.total_seconds()
@@ -115,15 +111,11 @@ def parse_pidstat_instance(instance_path):
 def parse_pidstat(binary_files_path):
     experiment_paths = glob.glob(os.path.join(binary_files_path, "*"))
 
-    instance_paths = []
-    for experiment_path in experiment_paths:
-        instance_paths.extend(glob.glob(os.path.join(experiment_path, "*")))
-
-    parsed_instances = [parse_pidstat_instance(path) for path in instance_paths]
+    parsed_instances = [parse_pidstat_instance(path) for path in experiment_paths]
     df = pd.concat(parsed_instances, sort=False)
-    df = df.sort_values(["Time", "id", "node"]).reset_index()
+    df = df.sort_values(["Software", "CLA", "Bundles per Second", "# Node", "# Payloads", "Payload Size", "Time"]).reset_index()
 
-    df = df.groupby(["id", "routing", "dt"]).sum()
+    df = df.groupby(["Software", "CLA", "Bundles per Second", "# Node", "# Payloads", "Payload Size", "dt"]).sum().reset_index()
     df = df[["%CPU", "RSS"]]
 
     return df

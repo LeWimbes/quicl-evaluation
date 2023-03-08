@@ -27,6 +27,7 @@ def parse_node(
     software,
     bps,
     cla,
+    loss,
     node_count,
     num_payloads,
     payload_size,
@@ -74,6 +75,7 @@ def parse_node(
                         "Software": software,
                         "Bundles per Second": bps,
                         "CLA": cla,
+                        "Loss": loss,
                         "# Nodes": node_count,
                         "# Payloads": num_payloads,
                     }
@@ -103,6 +105,7 @@ def parse_bundle_events_instance(
             software=params["software"],
             bps=params["bps"],
             cla=params["cla"],
+            loss=params["loss"],
             node_count=params["node_count"],
             num_payloads=params["num_payloads"],
             payload_size=params["payload_size"],

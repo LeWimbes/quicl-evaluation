@@ -94,11 +94,7 @@ def parse_bwms_instance(instance_path):
 def parse_bwms(binary_files_path):
     experiment_paths = glob.glob(os.path.join(binary_files_path, "*"))
 
-    instance_paths = []
-    for experiment_path in experiment_paths:
-        instance_paths.extend(glob.glob(os.path.join(experiment_path, "*")))
-
-    parsed_instances = [parse_bwms_instance(path) for path in instance_paths]
+    parsed_instances = [parse_bwms_instance(path) for path in experiment_paths]
     df = pd.concat(parsed_instances, sort=False)
     df = df.sort_values(["Software", "CLA", "Bundles per Second", "# Node", "# Payloads", "Payload Size", "ts"]).reset_index()
 

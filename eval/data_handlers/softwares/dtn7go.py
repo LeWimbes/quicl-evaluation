@@ -23,6 +23,7 @@ def parse_node(
     software,
     bps,
     cla,
+    loss,
     node_count,
     num_payloads,
     payload_size,
@@ -45,7 +46,7 @@ def parse_node(
                 elif 'level=info msg="Processing newly received bundle" bundle="dtn://n1/' in line:  # Received bundle
                     event = "reception"
 
-                elif 'level=info msg="Received bundle for local delivery" bundle="dtn://n1/' in line and int(node_id[1:]) == int(node_count): # Bundle reached destination
+                elif "REST Application Agent delivering message to a client" in line : #and int(node_id[1:]) != 1: # Bundle reached destination
                     event = "delivery"
 
                 else:
@@ -65,6 +66,7 @@ def parse_node(
                         "Software": software,
                         "Bundles per Second": bps,
                         "CLA": cla,
+                        "Loss": loss,
                         "# Nodes": node_count,
                         "# Payloads": num_payloads,
                     }
@@ -93,6 +95,7 @@ def parse_bundle_events_instance(
             software=params["software"],
             bps=params["bps"],
             cla=params["cla"],
+            loss=params["loss"],
             node_count=params["node_count"],
             num_payloads=params["num_payloads"],
             payload_size=params["payload_size"],
