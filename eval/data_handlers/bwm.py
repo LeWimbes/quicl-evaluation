@@ -67,8 +67,8 @@ def parse_bwm(bwm_path):
     parameters = parse_instance_parameters(dir_path)
 
     df["Software"] = parameters["software"]
-    df["Bundles per Second"] = parameters["bps"]
     df["CLA"] = parameters["cla"]
+    df["Loss"] = parameters["loss"]
     df["# Node"] = parameters["node_count"]
     df["# Payloads"] = parameters["num_payloads"]
     df["Payload Size"] = parameters["payload_size"]
@@ -96,10 +96,10 @@ def parse_bwms(binary_files_path):
 
     parsed_instances = [parse_bwms_instance(path) for path in experiment_paths]
     df = pd.concat(parsed_instances, sort=False)
-    df = df.sort_values(["Software", "CLA", "Bundles per Second", "# Node", "# Payloads", "Payload Size", "ts"]).reset_index()
+    df = df.sort_values(["Software", "CLA", "Loss", "# Node", "# Payloads", "Payload Size", "ts"]).reset_index()
 
     df = df.drop(columns=["level_0", "index"])
-    df = df.groupby(["Software", "CLA", "Bundles per Second", "# Node", "# Payloads", "Payload Size", "dt"]).sum().reset_index()
+    df = df.groupby(["Software", "CLA", "Loss", "# Node", "# Payloads", "Payload Size", "dt"]).sum().reset_index()
     df["Mbit/s"] = df["bytes_out/s"] / 1024 / 1024 * 8
 
     return df

@@ -17,7 +17,6 @@ def log_entry_bundle_id(line):
 def parse_node(
     node_path,
     software,
-    bps,
     cla,
     loss,
     node_count,
@@ -60,7 +59,6 @@ def parse_node(
                         "Node": node_id,
                         "Bundle": bundle_id,
                         "Software": software,
-                        "Bundles per Second": bps,
                         "CLA": cla,
                         "Loss": loss,
                         "# Nodes": node_count,
@@ -88,7 +86,6 @@ def parse_bundle_events_instance(
         parse_node(
             node_path=p,
             software=params["software"],
-            bps=params["bps"],
             cla=params["cla"],
             loss=params["loss"],
             node_count=params["node_count"],

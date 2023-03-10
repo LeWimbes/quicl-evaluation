@@ -25,12 +25,12 @@ class Software:
     def init_software(self, node_name):
         pass
 
-    def send_files(self, sender_id, payload_folder_path, dst_name, bps):
+    def send_files(self, sender_id, payload_folder_path, dst_name, num_payloads):
         sender_node = self.session.get_node(sender_id, CoreNode)
 
         payload_paths = pathlib.Path(payload_folder_path).glob('*.file')
 
-        wait_time = 1 / bps
+        wait_time = num_payloads / 10
         for payload_path in payload_paths:
             print("Sending payload")
             mp.Process(target=self.send_file, args=(sender_node, payload_path, dst_name)).start()

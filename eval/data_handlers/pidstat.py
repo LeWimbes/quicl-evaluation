@@ -81,8 +81,8 @@ def parse_pidstat_file(pidstat_path):
         parameters = parse_instance_parameters(dir_path)
 
         pidstat_df["Software"] = parameters["software"]
-        pidstat_df["Bundles per Second"] = parameters["bps"]
         pidstat_df["CLA"] = parameters["cla"]
+        pidstat_df["Loss"] = parameters["loss"]
         pidstat_df["# Node"] = parameters["node_count"]
         pidstat_df["# Payloads"] = parameters["num_payloads"]
         pidstat_df["Payload Size"] = parameters["payload_size"]
@@ -113,9 +113,9 @@ def parse_pidstat(binary_files_path):
 
     parsed_instances = [parse_pidstat_instance(path) for path in experiment_paths]
     df = pd.concat(parsed_instances, sort=False)
-    df = df.sort_values(["Software", "CLA", "Bundles per Second", "# Node", "# Payloads", "Payload Size", "Time"]).reset_index()
+    df = df.sort_values(["Software", "CLA", "Loss", "# Node", "# Payloads", "Payload Size", "Time"]).reset_index()
 
-    df = df.groupby(["Software", "CLA", "Bundles per Second", "# Node", "# Payloads", "Payload Size", "dt"]).sum().reset_index()
+    df = df.groupby(["Software", "CLA", "Loss", "# Node", "# Payloads", "Payload Size", "dt"]).sum().reset_index()
     df = df[["%CPU", "RSS"]]
 
     return df

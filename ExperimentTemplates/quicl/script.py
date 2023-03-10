@@ -1,7 +1,6 @@
 ### ENV int node_count "How many nodes should be emulated"
 ### ENV int payload_size "Size of payload to be sent in bytes"
 ### ENV int num_payloads "How many payloads should be sent"
-### ENV int bps "How many bundles per second to send"
 ### ENV int loss "How much loss the channels should have"
 ### ENV string software "Which DTN software should be used"
 ### ENV string cla "Which CLA to use (if applicalbe)"
@@ -59,7 +58,7 @@ if __name__ in ["__main__", "__builtin__"]:
     software = {{software}}(session)
     software.init_software(1)
     software.init_software({{node_count}})
-    software.send_files(1, payload_path, "n{{node_count}}", {{bps}})
+    software.send_files(1, payload_path, "n{{node_count}}", {{num_payloads}})
     software.wait_for_arrivals({{node_count}}, {{num_payloads}})
     time.sleep(10)
 
