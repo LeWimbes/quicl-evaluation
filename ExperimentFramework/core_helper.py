@@ -36,11 +36,6 @@ def create_session(_id, dtn_software, node_count, cla, loss):
     nodes = []
     for node_num in range(1, node_count + 1):
         node = session.add_node(CoreNode, name=f"n{node_num}", options=CoreNodeOptions(model="prouter"))
-
-        session.services.add_services(node, node.model, ["DefaultRoute", "bwm-ng", "pidstat", dtn_software])
-        service = session.services.get_service(node.id, dtn_software, default_service=True)
-        service.config_data['cla'] = cla
-
         nodes.append(node)
 
     ip_netmask = "24"
@@ -53,6 +48,15 @@ def create_session(_id, dtn_software, node_count, cla, loss):
         iface2 = InterfaceData(ip4=ip2, ip4_mask=ip_netmask)
 
         session.add_link(node_a.id, node_b.id, iface1, iface2, link_options)
+
+    for node in nodes:
+        session.services.add_services(node, node.model, ["DefaultRoute", "bwm-ng", "pidstat", dtn_software])
+        service = session.services.get_service(node.id, dtn_software, default_service=True)
+        service.config_data['cla'] = cla
+        if node.id == node_count:
+            service.config_data['ip'][node.id] = None
+        else:
+            service.config_data['ip'][node.id] = f"10.0.{node.id}.2"
 
     session.set_state(EventTypes.INSTANTIATION_STATE)
     errors = session.instantiate()

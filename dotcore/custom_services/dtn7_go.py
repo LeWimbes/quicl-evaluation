@@ -14,11 +14,11 @@ class DTN7GoService(CoreService):
     validation_timer: int = 1
     validation_period: float = 0.5
     shutdown: tuple[str, ...] = ("pkill dtngod", )
-    config_data: dict[str, str] = {"cla": "mtcp"}
+    config_data: dict[str, str] = {"cla": "mtcp", "ip": {}}
 
     @classmethod
     def generate_config(cls, node: CoreNode, filename: str) -> str:
-        return f"""
+        cfg = f"""
 [core]
 store = "store_{node.name}"
 node-id = "dtn://{node.name}/"
@@ -30,7 +30,7 @@ report-caller = false
 format = "text"
 
 [discovery]
-ipv4 = true
+ipv4 = {"false" if cls.config_data['cla'] == "quicl" else "true"}
 ipv6 = false
 interval = 2
 
@@ -48,6 +48,16 @@ clean-id = "1h"
 [[listen]]
 protocol = "{cls.config_data['cla']}"
 endpoint = ":4556"
+
 [routing]
 algorithm = "epidemic"
+
 """
+
+        if cls.config_data['cla'] == "quicl" and cls.config_data['ip'][node.id] is not None:
+            cfg = cfg + f"""[[peer]]
+protocol = "{cls.config_data['cla']}"
+endpoint = "{cls.config_data['ip'][node.id]}:4556"
+"""
+
+        return cfg
