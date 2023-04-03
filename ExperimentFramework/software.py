@@ -30,7 +30,7 @@ class Software:
 
         payload_paths = pathlib.Path(payload_folder_path).glob('*.file')
 
-        wait_time = num_payloads / 10
+        wait_time = 10 / num_payloads
         for payload_path in payload_paths:
             print("Sending payload")
             mp.Process(target=self.send_file, args=(sender_node, payload_path, dst_name)).start()

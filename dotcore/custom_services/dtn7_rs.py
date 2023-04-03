@@ -14,7 +14,7 @@ class DTN7rsService(CoreService):
     validation_timer: int = 1
     validation_period: float = 0.5
     shutdown: tuple[str, ...] = ("pkill -9 dtnrs", )
-    config_data: dict[str, str] = {"cla": "mtcp"}
+    config_data: dict[str, str] = {"cla": "mtcp", "ip": {}}
 
     @classmethod
     def generate_config(cls, node: CoreNode, filename: str) -> str:
