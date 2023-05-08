@@ -55,27 +55,12 @@ def parse_pidstat_file(pidstat_path):
         ]
 
         pidstat_df = pd.DataFrame(stats_list, columns=csv_header)
+        pidstat_df = pidstat_df.loc[pidstat_df["Command"] == "dtngod"]
+        pidstat_df[PIDSTAT_NUMERICS] = pidstat_df[PIDSTAT_NUMERICS].apply(pd.to_numeric)
+        pidstat_df = pidstat_df[["Time", "%CPU", "RSS"]]
 
         pidstat_df["Time"] = pd.to_datetime(pidstat_df["Time"])
         pidstat_df["Node"] = node
-
-        pidstat_df[PIDSTAT_NUMERICS] = pidstat_df[PIDSTAT_NUMERICS].apply(pd.to_numeric)
-
-        pidstat_df = pidstat_df.loc[
-            ~pidstat_df["Command"].isin(
-                [
-                    "vnoded",
-                    "bwm-ng",
-                    "pidstat",
-                    "ldconfig",
-                    "bash",
-                    "sh",
-                    "ldconfig.real",
-                    "sleep",
-                    "tee",
-                ]
-            )
-        ]
 
         dir_path = os.path.dirname(pidstat_path)
         parameters = parse_instance_parameters(dir_path)
@@ -87,6 +72,7 @@ def parse_pidstat_file(pidstat_path):
         pidstat_df["# Payloads"] = parameters["num_payloads"]
         pidstat_df["Payload Size"] = parameters["payload_size"]
         pidstat_df["Simulation ID"] = parameters["simInstanceId"]
+
 
         return pidstat_df
 
@@ -103,7 +89,7 @@ def parse_pidstat_instance(instance_path):
     pidstat_df = pidstat_df.sort_values(["Time", "Node"]).reset_index()
     pidstat_df["dt"] = (
         pidstat_df["Time"] - pidstat_df["Time"].iloc[0]
-    ).dt.total_seconds()
+    )
 
     return pidstat_df
 
@@ -113,9 +99,9 @@ def parse_pidstat(binary_files_path):
 
     parsed_instances = [parse_pidstat_instance(path) for path in experiment_paths]
     df = pd.concat(parsed_instances, sort=False)
-    df = df.sort_values(["Software", "CLA", "Loss", "# Node", "# Payloads", "Payload Size", "Time"]).reset_index()
 
-    df = df.groupby(["Software", "CLA", "Loss", "# Node", "# Payloads", "Payload Size", "dt"]).sum().reset_index()
-    df = df[["%CPU", "RSS"]]
+    df = df.set_index("dt")
+    df = df.groupby(["Software", "CLA", "Loss", "# Node", "# Payloads", "Payload Size"], as_index=True).resample("1S").mean(numeric_only=True)
+    df = df.drop(columns=["index", "Loss", "# Node", "# Payloads", "Payload Size"])
 
     return df

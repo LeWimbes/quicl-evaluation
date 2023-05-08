@@ -86,7 +86,7 @@ def parse_bwms_instance(instance_path):
     df = pd.concat(parsed_bwms)
 
     df = df.sort_values(["ts", "Node"]).reset_index()
-    df["dt"] = (df["ts"] - df["ts"].iloc[0]).dt.total_seconds()
+    df["dt"] = (df["ts"] - df["ts"].iloc[0])
 
     return df
 
@@ -96,10 +96,10 @@ def parse_bwms(binary_files_path):
 
     parsed_instances = [parse_bwms_instance(path) for path in experiment_paths]
     df = pd.concat(parsed_instances, sort=False)
-    df = df.sort_values(["Software", "CLA", "Loss", "# Node", "# Payloads", "Payload Size", "ts"]).reset_index()
 
-    df = df.drop(columns=["level_0", "index"])
-    df = df.groupby(["Software", "CLA", "Loss", "# Node", "# Payloads", "Payload Size", "dt"]).sum().reset_index()
+    df = df.set_index("dt")
+    df = df.groupby(["Software", "CLA", "Loss", "# Node", "# Payloads", "Payload Size"], as_index=True).resample("1S").mean(numeric_only=True)
+    df = df.drop(columns=["index", "Loss", "# Node", "# Payloads", "Payload Size"])
     df["Mbit/s"] = df["bytes_out/s"] / 1024 / 1024 * 8
 
     return df

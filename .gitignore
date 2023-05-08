@@ -70,3 +70,4 @@ dotcore/gui.log*
 Experiments/**
 binary_files/**
 venv/**
+*.pdf
