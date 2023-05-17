@@ -107,7 +107,10 @@ def create_session_xml(_id, topo_path, dtn_software, cla):
     return session
 
 
-def cleanup_experiment(session, payload_path, should_collect_logs=False):
+def cleanup_experiment(session, payload_path, should_collect_logs=False, software=None):
+    if software:
+        software.terminate_processes()
+
     # When the experiment is finished, we set the session to
     # DATACOLLECT_STATE and collect the logs.
     # After that, we shutdown the session, cleanup the generated payloads
