@@ -1,0 +1,1 @@
+{"paramValues":{"num_payloads":[100,1000],"software":["IBRDTN"],"cla":["tcp","udp"],"payload_size":[1000,100000,1000000],"movement":[1,2,3,4,5]},"capabilities":[],"repetitions":1,"seeds":1}

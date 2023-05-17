@@ -63,8 +63,10 @@ dotcore/prefs.conf
 dotcore/backgrounds/**
 dotcore/config.yaml
 dotcore/icons/**
-dotcore/mobility/**
-dotcore/xmls/**
+dotcore/mobility/sample1.scen
+dotcore/mobility/movement.ns_movement
+dotcore/xmls/*
+!dotcore/xmls/quicl*.xml
 **/__pycache__/**
 dotcore/gui.log*
 Experiments/**

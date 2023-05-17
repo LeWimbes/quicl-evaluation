@@ -30,7 +30,7 @@ report-caller = false
 format = "text"
 
 [discovery]
-ipv4 = {"false" if cls.config_data['cla'] == "quicl" else "true"}
+ipv4 = {"false" if cls.config_data['cla'] == "quicl" and "mobile" not in cls.config_data['ip'] else "true"}
 ipv6 = false
 interval = 2
 
@@ -54,7 +54,7 @@ algorithm = "epidemic"
 
 """
 
-        if cls.config_data['cla'] == "quicl" and cls.config_data['ip'][node.id] is not None:
+        if "mobile" not in cls.config_data['ip'] and cls.config_data['cla'] == "quicl" and cls.config_data['ip'][node.id] is not None:
             cfg = cfg + f"""[[peer]]
 protocol = "{cls.config_data['cla']}"
 endpoint = "{cls.config_data['ip'][node.id]}:4556"

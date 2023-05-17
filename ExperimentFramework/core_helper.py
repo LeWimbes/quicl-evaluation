@@ -3,6 +3,7 @@ import traceback
 import time
 import os
 import shutil
+import errno
 
 import netaddr
 
@@ -18,10 +19,10 @@ from core.xml.corexml import CoreXmlReader
 from log_files import collect_logs
 
 
-def create_session(_id, dtn_software, node_count, cla, loss):
+def create_session(sim_id, dtn_software, node_count, cla, loss):
 
     coreemu = CoreEmu()
-    session = coreemu.create_session(_id=_id)
+    session = coreemu.create_session(_id=sim_id)
 
     session.set_state(EventTypes.DEFINITION_STATE)
 
@@ -68,9 +69,11 @@ def create_session(_id, dtn_software, node_count, cla, loss):
     return session
 
 
-def create_session_xml(topo_path, _id, dtn_software):
+def create_session_xml(_id, topo_path, dtn_software, cla):
+
     coreemu = CoreEmu()
     session = coreemu.create_session(_id=_id)
+
     session.set_state(EventTypes.DEFINITION_STATE)
 
     errors = ServiceManager.add_services(pathlib.Path('/root/.coregui/custom_services'))
@@ -80,6 +83,7 @@ def create_session_xml(topo_path, _id, dtn_software):
         return None
 
     file_path = pathlib.Path(topo_path)
+
     session.clear()
     session.set_state(EventTypes.CONFIGURATION_STATE)
     session.name = file_path.name
@@ -89,6 +93,9 @@ def create_session_xml(topo_path, _id, dtn_software):
     for node in session.nodes.values():
         if type(node) is CoreNode:
             session.services.add_services(node, node.model, ["DefaultRoute", "bwm-ng", "pidstat", dtn_software])
+            service = session.services.get_service(node.id, dtn_software, default_service=True)
+            service.config_data['cla'] = cla
+            service.config_data['ip']["mobile"] = True
 
     session.set_state(EventTypes.INSTANTIATION_STATE)
     errors = session.instantiate()
@@ -119,3 +126,16 @@ def cleanup_experiment(session, payload_path, should_collect_logs=False):
     time.sleep(10)
 
     framework.stop()
+
+
+def link_movement(movement):
+    movement_path = '/root/.coregui/mobility/{}.ns_movement'.format(movement)
+    link_name = '/root/.coregui/mobility/movement.ns_movement'
+    try:
+        os.symlink(movement_path, link_name)
+    except OSError as e:
+        if e.errno == errno.EEXIST:
+            os.remove(link_name)
+            os.symlink(movement_path, link_name)
+        else:
+            raise e
