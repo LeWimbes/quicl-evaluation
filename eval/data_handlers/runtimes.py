@@ -36,7 +36,6 @@ def parse_instance_parameters(path: str) -> Dict[str, Union[str, int]]:
 def parse_bundle_events_instance(
     instance_path: str,
 ) -> List[Dict[str, List[Dict[str, Union[str, datetime]]]]]:
-    print(f"Parsing {instance_path}", flush=True)
     param_path = os.path.join(instance_path, "parameters.py")
 
     params = parse_instance_parameters(path=param_path)
