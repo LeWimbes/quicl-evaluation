@@ -1,8 +1,8 @@
-### Container to build dtn7-go
-FROM golang:1.19 AS dtn7-go-builder
+### Container to build dtn7-ng
+FROM golang:1.21 AS dtn7-ng-builder
 
-COPY dtn7-go /dtn7-go
-WORKDIR /dtn7-go
+COPY dtn7-ng /dtn7-ng
+WORKDIR /dtn7-ng
 RUN go build -race -buildvcs=false -o /dtngod ./cmd/dtnd
 
 
@@ -121,7 +121,7 @@ RUN echo 'export SERVALINSTANCE_PATH=$SESSION_DIR/`hostname`.conf' >> /root/.ser
 
 # Install the software
 # DTN7
-COPY --from=dtn7-go-builder    /dtngod                          /usr/local/sbin/
+COPY --from=dtn7-ng-builder /dtngod                          /usr/local/sbin/
 # DTN7-RS
 COPY --from=dtn7-rs-builder /dtnrs                              /usr/local/sbin/
 COPY --from=dtn7-rs-builder /dtnrsquery                         /usr/local/sbin/

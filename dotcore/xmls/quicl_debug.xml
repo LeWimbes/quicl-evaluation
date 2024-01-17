@@ -8,6 +8,7 @@
         <service name="DefaultRoute"/>
         <service name="bwm-ng"/>
         <service name="pidstat"/>
+        <service name="DTN7NG"/>
       </services>
     </device>
     <device id="2" name="n2" icon="" canvas="1" type="PC" class="" image="">
@@ -16,6 +17,7 @@
         <service name="DefaultRoute"/>
         <service name="bwm-ng"/>
         <service name="pidstat"/>
+        <service name="DTN7NG"/>
       </services>
     </device>
   </devices>
