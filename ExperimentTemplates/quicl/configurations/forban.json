@@ -1,1 +1,0 @@
-{"paramValues":{"num_payloads":[10,100],"software":["Forban"],"node_count":[32,2],"cla":["default"],"payload_size":[1000,100000,1000000],"loss":[0,10,30,50]},"capabilities":[],"repetitions":1,"seeds":1}

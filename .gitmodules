@@ -4,9 +4,6 @@
 [submodule "ibrdtn"]
 	path = ibrdtn
 	url = https://github.com/ibrdtn/ibrdtn.git
-[submodule "forban"]
-	path = forban
-	url = https://github.com/adulau/Forban.git
 [submodule "dtn7-ng"]
 	path = dtn7-ng
 	url = git@github.com:dtn7/ntd7-og.git
