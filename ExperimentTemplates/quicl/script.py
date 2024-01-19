@@ -15,7 +15,6 @@ import logging
 import framework
 from core_helper import *
 
-from forban import Forban
 from dtngod import DTN7NG
 from ibr_dtn import IBRDTN
 from serval import Serval

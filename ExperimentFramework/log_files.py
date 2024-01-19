@@ -15,13 +15,6 @@ excluded_files = [
     "proc/",
     "rhizome.db",
     "serval.keyring",
-    # Forban
-    "forban/bin",
-    "forban/doc",
-    "forban/lib",
-    "forban/var/loot",
-    "forban/var/share",
-    "forban/cfg",
     ".git",
     "AUTHORS",
     "FAQ",
