@@ -14,7 +14,7 @@ class IbrDtnService(CoreService):
     validation_timer: int = 1
     validation_period: float = 0.5
     shutdown: tuple[str, ...] = ("pkill dtnd", )
-    config_data: dict[str, str] = {"cla": "dgram:ethernet", "ip": {}}
+    config_data: dict[str, str] = {"cla": "dgram:ethernet"}
 
     @classmethod
     def generate_config(cls, node: CoreNode, filename: str) -> str:

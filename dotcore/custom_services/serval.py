@@ -56,7 +56,7 @@ class ServalService(CoreService):
     validation_timer: int = 1                        # Wait 1 second before validating service.
     validation_period: float = 0.5                     # Retry after 1 second if validation was not successful.
     shutdown: tuple[str, ...] = ('bash -c "servald stop"', )
-    config_data: dict[str, str] = {"cla": None, "ip": {}}
+    config_data: dict[str, str] = {"cla": None}
 
     @classmethod
     def get_startup(cls, node: CoreNode) -> tuple[str, ...]:

@@ -14,7 +14,7 @@ class DTN7NGService(CoreService):
     validation_timer: int = 1
     validation_period: float = 0.5
     shutdown: tuple[str, ...] = ("pkill dtngod", )
-    config_data: dict[str, str] = {"cla": "mtcp", "ip": {}}
+    config_data: dict[str, str] = {"cla": "mtcp"}
 
     @classmethod
     def generate_config(cls, node: CoreNode, filename: str) -> str:
@@ -34,8 +34,8 @@ algorithm = "epidemic"
 address = ":8080"
 
 [[Listener]]
-type = "MTCP"
-address = ":35039"
+type = "{cls.config_data['cla']}"
+address = ":35037"
 """
 
         return cfg

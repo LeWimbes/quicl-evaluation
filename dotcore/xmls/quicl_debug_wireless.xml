@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<scenario name="/tmp/tmpw697kgnt">
+  <networks>
+    <network id="3" name="n3" icon="" canvas="1" type="WIRELESS">
+      <position x="61.0" y="67.0" lat="47.57855740161463" lon="-122.13150226026501" alt="2.0"/>
+      <wireless>
+        <configuration name="movement" value="1"/>
+        <configuration name="max-range" value="400.0"/>
+        <configuration name="bandwidth" value="54000000"/>
+        <configuration name="delay" value="5000"/>
+        <configuration name="jitter" value="0"/>
+        <configuration name="loss-range" value="300.0"/>
+        <configuration name="loss-factor" value="1.0"/>
+        <configuration name="loss" value="0.0"/>
+      </wireless>
+    </network>
+  </networks>
+  <devices>
+    <device id="1" name="n1" icon="" canvas="1" type="PC" class="" image="">
+      <position x="457.0" y="507.0" lat="47.57455775208715" lon="-122.12616626747733" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+        <service name="pidstat"/>
+        <service name="bwm-ng"/>
+        <service name="DTN7NG"/>
+      </services>
+    </device>
+    <device id="2" name="n2" icon="" canvas="1" type="PC" class="" image="">
+      <position x="676.0" y="469.0" lat="47.574903188417906" lon="-122.12321530176902" alt="2.0"/>
+      <services>
+        <service name="DefaultRoute"/>
+        <service name="pidstat"/>
+        <service name="bwm-ng"/>
+        <service name="DTN7NG"/>
+      </services>
+    </device>
+  </devices>
+  <links>
+    <link node1="1" node2="3">
+      <iface1 id="0" name="eth0" ip4="10.0.0.20" ip4_mask="24"/>
+    </link>
+    <link node1="2" node2="3">
+      <iface1 id="0" name="eth0" ip4="10.0.0.21" ip4_mask="24"/>
+    </link>
+  </links>
+  <session_origin lat="47.579166412353516" lon="-122.13232421875" alt="2.0" scale="150.0"/>
+  <session_options>
+    <configuration name="controlnet" value=""/>
+    <configuration name="controlnet0" value=""/>
+    <configuration name="controlnet1" value=""/>
+    <configuration name="controlnet2" value=""/>
+    <configuration name="controlnet3" value=""/>
+    <configuration name="controlnet_updown_script" value=""/>
+    <configuration name="enablerj45" value="1"/>
+    <configuration name="preservedir" value="0"/>
+    <configuration name="enablesdt" value="0"/>
+    <configuration name="sdturl" value="tcp://127.0.0.1:50000/"/>
+    <configuration name="ovs" value="0"/>
+    <configuration name="platform_id_start" value="1"/>
+    <configuration name="nem_id_start" value="1"/>
+    <configuration name="link_enabled" value="1"/>
+    <configuration name="loss_threshold" value="30"/>
+    <configuration name="link_interval" value="1"/>
+    <configuration name="link_timeout" value="4"/>
+    <configuration name="mtu" value="0"/>
+  </session_options>
+  <session_metadata>
+    <configuration name="shapes" value="[]"/>
+    <configuration name="edges" value="[]"/>
+    <configuration name="hidden" value="[]"/>
+    <configuration name="canvas" value="{&quot;gridlines&quot;: true, &quot;canvases&quot;: [{&quot;id&quot;: 1, &quot;wallpaper&quot;: null, &quot;wallpaper_style&quot;: 1, &quot;fit_image&quot;: false, &quot;dimensions&quot;: [1000, 750]}]}"/>
+  </session_metadata>
+  <default_services>
+    <node type="mdr">
+      <service name="zebra"/>
+      <service name="OSPFv3MDR"/>
+      <service name="IPForward"/>
+    </node>
+    <node type="PC">
+      <service name="DefaultRoute"/>
+    </node>
+    <node type="prouter"/>
+    <node type="router">
+      <service name="zebra"/>
+      <service name="OSPFv2"/>
+      <service name="OSPFv3"/>
+      <service name="IPForward"/>
+    </node>
+    <node type="host">
+      <service name="DefaultRoute"/>
+      <service name="SSH"/>
+    </node>
+  </default_services>
+</scenario>

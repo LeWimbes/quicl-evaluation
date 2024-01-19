@@ -7,7 +7,7 @@ from typing import Dict, List, Union, Tuple
 
 import pandas as pd
 
-import data_handlers.softwares.dtn7go
+import data_handlers.softwares.dtn7ng
 import data_handlers.softwares.dtn7rs
 import data_handlers.softwares.ibr_dtn
 import data_handlers.softwares.serval
@@ -15,7 +15,7 @@ import data_handlers.softwares.forban
 
 
 parsing_functions = {
-    "DTN7Go": data_handlers.softwares.dtn7go.parse_bundle_events_instance,
+    "DTN7NG": data_handlers.softwares.dtn7ng.parse_bundle_events_instance,
     "DTN7Rs": data_handlers.softwares.dtn7rs.parse_bundle_events_instance,
     "IBRDTN": data_handlers.softwares.ibr_dtn.parse_bundle_events_instance,
     "Serval": data_handlers.softwares.serval.parse_bundle_events_instance,

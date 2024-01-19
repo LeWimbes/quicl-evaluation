@@ -4,7 +4,7 @@ from core.nodes.base import CoreNode
 
 from software import Software
 
-class DTN7Go(Software):
+class DTN7NG(Software):
 
     def init_software(self, node_id):
         node = self.session.get_node(int(node_id), CoreNode)
@@ -31,7 +31,7 @@ class DTN7Go(Software):
                     time.sleep(0.1)
                     continue
 
-                if 'level=info msg="REST Application Agent delivering message to a client\'s inbox" bundle="dtn://n1/' in line:
+                if 'level=debug msg="REST Application Agent delivering message to a client\'s inbox" bundle="dtn://n1/' in line:
                     arrived_payloads += 1
                     if arrived_payloads == payload_count:
                         break

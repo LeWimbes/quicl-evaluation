@@ -54,10 +54,6 @@ def create_session(sim_id, dtn_software, node_count, cla, loss):
         session.services.add_services(node, node.model, ["DefaultRoute", "bwm-ng", "pidstat", dtn_software])
         service = session.services.get_service(node.id, dtn_software, default_service=True)
         service.config_data['cla'] = cla
-        if node.id == node_count:
-            service.config_data['ip'][node.id] = None
-        else:
-            service.config_data['ip'][node.id] = f"10.0.{node.id}.2"
 
     session.set_state(EventTypes.INSTANTIATION_STATE)
     errors = session.instantiate()
