@@ -32,7 +32,7 @@ def parse_instance_parameters(path: str) -> Dict[str, Union[str, int]]:
 
 
 def parse_bundle_events_instance(
-    instance_path: str,
+    instance_path: str, mobile: bool
 ) -> List[Dict[str, List[Dict[str, Union[str, datetime]]]]]:
     param_path = os.path.join(instance_path, "parameters.py")
 
@@ -40,16 +40,16 @@ def parse_bundle_events_instance(
 
     software = params['software']
 
-    return parsing_functions[software](instance_path, params)
+    return parsing_functions[software](instance_path, params, mobile)
 
 
-def parse_bundle_events(experiment_path: str, experiment_ids: List[int]) -> pd.DataFrame:
+def parse_bundle_events(experiment_path: str, experiment_ids: List[int], mobile: bool) -> pd.DataFrame:
 
     event_frames = []
     for experiment_id in experiment_ids:
         instance_paths = glob.glob(os.path.join(experiment_path, str(experiment_id), "*"))
 
-        parsed_instances = [parse_bundle_events_instance(path) for path in instance_paths]
+        parsed_instances = [parse_bundle_events_instance(path, mobile) for path in instance_paths]
         bundle_events: List[Dict[str, Union[str, datetime]]] = []
         for instance in parsed_instances:
             for node in instance:

@@ -21,6 +21,10 @@ class DTN7NGService(CoreService):
         cfg = f"""
 node_id = "dtn://{node.name}/"
 
+[Debug]
+profiling = true
+profile_file = "{node.name}.pprof"
+
 [Store]
 path = "store_{node.name}"
 

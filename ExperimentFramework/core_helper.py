@@ -91,7 +91,6 @@ def create_session_xml(_id, topo_path, dtn_software, cla):
             session.services.add_services(node, node.model, ["DefaultRoute", "bwm-ng", "pidstat", dtn_software])
             service = session.services.get_service(node.id, dtn_software, default_service=True)
             service.config_data['cla'] = cla
-            service.config_data['ip']["mobile"] = True
 
     session.set_state(EventTypes.INSTANTIATION_STATE)
     errors = session.instantiate()

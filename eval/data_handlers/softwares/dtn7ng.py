@@ -20,13 +20,15 @@ def log_entry_bundle_id(line):
 
 def parse_node(
     node_path,
+    mobile,
     software,
     cla,
-    loss,
-    node_count,
     num_payloads,
     payload_size,
     sim_instance_id,
+    loss=None,
+    node_count=None,
+    movement=None,
 ) -> Dict[str, List[Dict[str, Union[str, int, datetime]]]]:
 
     bundles = {}
@@ -36,7 +38,7 @@ def parse_node(
     with open(node_path, "r") as f:
         for line in f.readlines():
             try:
-                if 'level=debug msg="Application agent sent bundle." bundle="dtn://n1/' in line and int(node_id[1:]) == 1:  # A bundle is created
+                if 'level=debug msg="Application agent sent bundle" bundle="dtn://n1/' in line and int(node_id[1:]) == 1:  # A bundle is created
                     event = "creation"
 
                 elif 'level=info msg="Sending bundle to a CLA (ConvergenceSender)" bundle="dtn://n1/' in line: # A bundle is about to be sent
@@ -54,8 +56,8 @@ def parse_node(
                 bundle_id = log_entry_bundle_id(line)
 
                 events = bundles.get(bundle_id, [])
-                events.append(
-                    {
+                
+                result_dict = {
                         "Simulation ID": sim_instance_id,
                         "Payload Size": payload_size,
                         "Timestamp": log_entry_time(line),
@@ -64,11 +66,15 @@ def parse_node(
                         "Bundle": bundle_id,
                         "Software": software,
                         "CLA": cla,
-                        "Loss": loss,
-                        "# Nodes": node_count,
                         "# Payloads": num_payloads,
                     }
-                )
+                if mobile:
+                    result_dict["movement"] = movement
+                else:
+                    result_dict["Loss"] = loss
+                    result_dict["# Nodes"] = node_count
+                    
+                events.append(result_dict)
                 bundles[bundle_id] = events
 
             except KeyError as err:
@@ -82,21 +88,29 @@ def parse_node(
 
 
 def parse_bundle_events_instance(
-    instance_path: str, params,
+    instance_path: str, params, mobile,
 ) -> List[Dict[str, List[Dict[str, Union[str, datetime]]]]]:
     print(f"Parsing {instance_path}", flush=True)
-    node_paths = glob.glob(os.path.join(instance_path, "*.conf_dtngod.log*"))
+    node_paths = glob.glob(os.path.join(instance_path, "*.conf_dtngod.log"))
+    
+    param_kwargs = {}
+    if mobile:
+        param_kwargs["movement"] = params["movement"]
+        param_kwargs["node_count"] = 30
+    else:
+        param_kwargs["loss"] = params["loss"]
+        param_kwargs["node_count"] = params["node_count"]
 
     parsed_nodes = [
         parse_node(
             node_path=p,
+            mobile=mobile,
             software=params["software"],
             cla=params["cla"],
-            loss=params["loss"],
-            node_count=params["node_count"],
             num_payloads=params["num_payloads"],
             payload_size=params["payload_size"],
             sim_instance_id=params["simInstanceId"],
+            **param_kwargs
         )
         for p in node_paths
     ]
