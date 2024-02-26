@@ -199,8 +199,8 @@
       <configuration name="promiscuous" value="0"/>
     </mobility_configuration>
     <mobility_configuration node="31" model="ns2script">
-      <configuration name="file" value="/root/.coregui/mobility/movement.ns_movement"/>
-      <configuration name="refresh_ms" value="50"/>
+      <configuration name="file" value="/root/mobility/movement.ns_movement"/>
+      <configuration name="refresh_ms" value="2000"/>
       <configuration name="loop" value="0"/>
       <configuration name="autostart" value="1.0"/>
       <configuration name="map" value=""/>

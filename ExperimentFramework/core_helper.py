@@ -127,8 +127,8 @@ def cleanup_experiment(session, payload_path, should_collect_logs=False, softwar
 
 
 def link_movement(movement):
-    movement_path = '/root/.coregui/mobility/{}.ns_movement'.format(movement)
-    link_name = '/root/.coregui/mobility/movement.ns_movement'
+    movement_path = '/root/mobility/{}.ns_movement'.format(movement)
+    link_name = '/root/mobility/movement.ns_movement'
     try:
         os.symlink(movement_path, link_name)
     except OSError as e:
