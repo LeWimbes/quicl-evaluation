@@ -55,12 +55,11 @@ if __name__ in ["__main__", "__builtin__"]:
     time.sleep(20)
 
     # Run the experiment
-    last_node_id = 30
     software = {{software}}(session)
     software.init_software(1)
-    software.init_software(last_node_id)
-    software.send_files(1, payload_path, f"n{last_node_id}", {{num_payloads}}, burst_time=60*10)
-    software.wait_for_arrivals(last_node_id, {{num_payloads}})
+    software.init_software(30)
+    software.send_files(1, payload_path, f"n30", {{num_payloads}}, burst_time=60*10)
+    software.wait_for_arrivals(30, {{num_payloads}})
 
     time.sleep(10)
 
