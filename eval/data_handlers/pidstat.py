@@ -55,7 +55,7 @@ def parse_pidstat_file(pidstat_path):
         ]
 
         pidstat_df = pd.DataFrame(stats_list, columns=csv_header)
-        pidstat_df = pidstat_df.loc[pidstat_df["Command"] == "dtngod"]
+        pidstat_df = pidstat_df.loc[pidstat_df["Command"].isin(["dtngod", "dtnrs", "dtnd", "servald"])] 
         pidstat_df[PIDSTAT_NUMERICS] = pidstat_df[PIDSTAT_NUMERICS].apply(pd.to_numeric)
         pidstat_df = pidstat_df[["Time", "%CPU", "RSS"]]
 
@@ -94,14 +94,18 @@ def parse_pidstat_instance(instance_path):
     return pidstat_df
 
 
-def parse_pidstat(binary_files_path):
-    experiment_paths = glob.glob(os.path.join(binary_files_path, "*"))
+def parse_pidstat(binary_files_path, experiment_ids):
+    event_frames = []
+    for experiment_id in experiment_ids:
+        experiment_paths = glob.glob(os.path.join(binary_files_path, str(experiment_id), "*"))
 
-    parsed_instances = [parse_pidstat_instance(path) for path in experiment_paths]
-    df = pd.concat(parsed_instances, sort=False)
+        parsed_instances = [parse_pidstat_instance(path) for path in experiment_paths]
+        df = pd.concat(parsed_instances, sort=False)
 
-    df = df.set_index("dt")
-    df = df.groupby(["Software", "CLA", "Loss", "# Node", "# Payloads", "Payload Size"], as_index=True).resample("1S").mean(numeric_only=True)
-    df = df.drop(columns=["index", "Loss", "# Node", "# Payloads", "Payload Size"])
+        df = df.set_index("dt")
+        df = df.groupby(["Software", "CLA", "Loss", "# Node", "# Payloads", "Payload Size"], as_index=True).resample("1S").mean(numeric_only=True)
+        df = df.drop(columns=["index", "Loss", "# Node", "# Payloads", "Payload Size"])
+        
+        event_frames.append(df)
 
-    return df
+    return pd.concat(event_frames)

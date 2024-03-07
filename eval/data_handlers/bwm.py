@@ -91,15 +91,19 @@ def parse_bwms_instance(instance_path):
     return df
 
 
-def parse_bwms(binary_files_path):
-    experiment_paths = glob.glob(os.path.join(binary_files_path, "*"))
+def parse_bwms(binary_files_path, experiment_ids):
+    event_frames = []
+    for experiment_id in experiment_ids:
+        experiment_paths = glob.glob(os.path.join(binary_files_path, str(experiment_id), "*"))
 
-    parsed_instances = [parse_bwms_instance(path) for path in experiment_paths]
-    df = pd.concat(parsed_instances, sort=False)
+        parsed_instances = [parse_bwms_instance(path) for path in experiment_paths]
+        df = pd.concat(parsed_instances, sort=False)
 
-    df = df.set_index("dt")
-    df = df.groupby(["Software", "CLA", "Loss", "# Node", "# Payloads", "Payload Size"], as_index=True).resample("1S").mean(numeric_only=True)
-    df = df.drop(columns=["index", "Loss", "# Node", "# Payloads", "Payload Size"])
-    df["Mbit/s"] = df["bytes_out/s"] / 1024 / 1024 * 8
+        df = df.set_index("dt")
+        df = df.groupby(["Software", "CLA", "Loss", "# Node", "# Payloads", "Payload Size"], as_index=True).resample("1S").mean(numeric_only=True)
+        df = df.drop(columns=["index", "Loss", "# Node", "# Payloads", "Payload Size"])
+        df["Mbit/s"] = df["bytes_out/s"] / 1024 / 1024 * 8
+        
+        event_frames.append(df)
 
-    return df
+    return pd.concat(event_frames)
