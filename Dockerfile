@@ -1,5 +1,5 @@
 ### Container to build dtn7-ng
-FROM golang:1.21 AS dtn7-ng-builder
+FROM golang:1.22 AS dtn7-ng-builder
 
 COPY dtn7-ng /dtn7-ng
 WORKDIR /dtn7-ng
