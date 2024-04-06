@@ -84,13 +84,13 @@ RUN make install
 
 ### DTN7-rs
 FROM maciresearch/core_worker:9.0.1 AS dtn7-rs-builder
-RUN wget https://github.com/dtn7/dtn7-rs/releases/download/v0.18.2/dtn7-0.18.2-x86_64-unknown-linux-gnu.tar.gz \
-    && tar xf dtn7-0.18.2-x86_64-unknown-linux-gnu.tar.gz \
-    && mv dtn7-0.18.2/bin/dtnd /dtnrs \
-    && mv dtn7-0.18.2/bin/dtnquery /dtnrsquery \
-    && mv dtn7-0.18.2/bin/dtnrecv /dtnrsrecv \
-    && mv dtn7-0.18.2/bin/dtnsend /dtnrssend \
-    && mv dtn7-0.18.2/bin/dtntrigger /dtnrstrigger
+RUN wget https://github.com/dtn7/dtn7-rs/releases/download/v0.21.0/dtn7-0.21.0-x86_64-unknown-linux-gnu.tar.gz \
+    && tar xf dtn7-0.21.0-x86_64-unknown-linux-gnu.tar.gz \
+    && mv dtn7-0.21.0/bin/dtnd /dtnrs \
+    && mv dtn7-0.21.0/bin/dtnquery /dtnrsquery \
+    && mv dtn7-0.21.0/bin/dtnrecv /dtnrsrecv \
+    && mv dtn7-0.21.0/bin/dtnsend /dtnrssend \
+    && mv dtn7-0.21.0/bin/dtntrigger /dtnrstrigger
 
 ### CORE Container
 FROM maciresearch/core_worker:9.0.1
