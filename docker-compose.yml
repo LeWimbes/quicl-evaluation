@@ -1,17 +1,69 @@
-version: "3"
 services:
   quicl_eval:
     build:
       context: .
       dockerfile: Dockerfile
+    depends_on:
+      - maci-backend
     volumes:
       - /lib/modules:/lib/modules
       - /tmp/.X11-unix:/tmp/.X11-unix
       - ./dotcore:/root/.coregui
     privileged: true
+    networks:
+      macinet:
+        ipv4_address: 10.5.0.4
+    ports:
+      - "4038:4038"
+    restart: always
+    hostname: core
     cap_add:
       - NET_ADMIN
       - SYS_ADMIN
     environment:
-      - DISPLAY
-      - BACKEND
+      - BACKEND=10.5.0.2
+      #- DISPLAY
+
+  
+  jupyter:
+    image: jupyter/datascience-notebook
+    command: ["start.sh", "jupyter", "lab", "--NotebookApp.token='' --allow-root"]
+    networks:
+      macinet:
+        ipv4_address: 10.5.0.3
+    ports:
+      - "8888:8888"
+    volumes:
+      - jupyter-files:/home/jovyan
+      - ./maci_data:/maci_data
+    depends_on:
+      - maci-backend
+
+  
+  maci-backend:
+    image: maciresearch/maci-backend
+    volumes:
+      - simulation-framework:/maci/maci_backend/AppData/SimulationFramework
+      - simulation-files:/maci/maci_backend/AppData/Simulations
+      - jupyter-files:/maci/maci_backend/AppData/JupyterNotebook
+      - ./ExperimentFramework:/maci_data/ExperimentFramework
+      - ./ExperimentTemplates:/maci_data/ExperimentTemplates
+    networks:
+      macinet:
+        ipv4_address: 10.5.0.2
+    ports:
+      - "63658:63658"
+
+volumes:
+  simulation-framework:
+  simulation-files:
+  jupyter-files:
+
+
+networks:
+  macinet:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.5.0.0/16
+         gateway: 10.5.0.1
