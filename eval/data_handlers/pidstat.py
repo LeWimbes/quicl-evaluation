@@ -55,7 +55,7 @@ def parse_pidstat_file(pidstat_path):
         ]
 
         pidstat_df = pd.DataFrame(stats_list, columns=csv_header)
-        pidstat_df = pidstat_df.loc[pidstat_df["Command"].isin(["dtngod", "dtnrs", "dtnd", "servald"])] 
+        pidstat_df = pidstat_df.loc[pidstat_df["Command"].isin(["dtngod", "dtnrs"])]
         pidstat_df[PIDSTAT_NUMERICS] = pidstat_df[PIDSTAT_NUMERICS].apply(pd.to_numeric)
         pidstat_df = pidstat_df[["Time", "%CPU", "RSS"]]
 

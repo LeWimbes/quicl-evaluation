@@ -1,1 +1,0 @@
-{"paramValues":{"num_payloads":[10,100],"software":["Serval"],"node_count":[2,32,64],"cla":["default"],"payload_size":[1000,100000,1000000],"loss":[0,10,30]},"capabilities":[],"repetitions":1,"seeds":5}

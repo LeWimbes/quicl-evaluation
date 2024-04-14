@@ -15,8 +15,6 @@ import framework
 from core_helper import *
 
 from dtngod import DTN7NG
-from ibr_dtn import IBRDTN
-from serval import Serval
 from dtnrs import DTN7Rs
 from log_files import collect_logs
 

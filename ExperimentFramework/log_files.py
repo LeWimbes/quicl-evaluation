@@ -8,18 +8,14 @@ import framework
 excluded_files = [
     #DTN7
     "store_n",
-    # Serval
     "blob",
-    "serval.log",
     "keyring.dump",
     "proc/",
     "rhizome.db",
-    "serval.keyring",
     ".git",
     "AUTHORS",
     "FAQ",
     "README",
-    # IBRDTN
     "inbox"
 ]
 
