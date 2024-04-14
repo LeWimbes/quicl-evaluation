@@ -26,8 +26,9 @@ services:
 
   
   jupyter:
-    image: jupyter/datascience-notebook
-    command: ["start.sh", "jupyter", "lab", "--NotebookApp.token='' --allow-root"]
+    image: quay.io/jupyter/datascience-notebook
+    container_name: jupyter
+    command: ["start-notebook.py", "--IdentityProvider.token=''"]
     networks:
       macinet:
         ipv4_address: 10.5.0.3
@@ -42,6 +43,7 @@ services:
   
   maci-backend:
     image: maciresearch/maci-backend
+    container_name: maci-backend
     volumes:
       - simulation-framework:/maci/maci_backend/AppData/SimulationFramework
       - simulation-files:/maci/maci_backend/AppData/Simulations
